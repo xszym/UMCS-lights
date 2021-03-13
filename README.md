@@ -15,3 +15,10 @@ The application will allow users to create scenes and animations that will be di
     <td align="center"><a href="https://github.com/xszym"><img src="https://avatars2.githubusercontent.com/u/21984800?s=100&v=4" width="100px;" alt=""/><br /><sub><b>Szymon Szostak</b></sub></a><br /><a href="https://illumination.atlassian.net/browse/IL-37?jql=assignee%20in%20(5f8094683fe0760069b54052)%20AND%20project%20%3D%20IL%20order%20by%20created%20DESC" title="Jira">Jira 👀</a></td>
   </tr>
 </table>
+
+
+# Run application
+`docker-compose up`
+
+## Testing
+`docker-compose exec backend pytest`
