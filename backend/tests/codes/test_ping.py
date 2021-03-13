@@ -9,8 +9,14 @@ def test_hello_world():
 
 
 def test_ping(client):
+    # Given
+    # client
+
+    # When
     url = reverse('ping')
     response = client.get(url)
     content = json.loads(response.content)
+
+    # Then
     assert response.status_code == status.HTTP_200_OK
     assert content['ping'] == 'pong!'
