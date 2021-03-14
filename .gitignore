@@ -5,3 +5,4 @@ venv
 .idea
 database/
 .env
+.pytest_cache
