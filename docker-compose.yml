@@ -1,6 +1,8 @@
 version: '3.8'
 
 services:
+  redis:
+    image: redis:6.2.1-alpine
   database:
     image: postgres:9.6.21-alpine
     volumes:
