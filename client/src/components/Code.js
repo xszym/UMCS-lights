@@ -2,13 +2,17 @@ import React, {useContext} from 'react'
 import codeContext from '../context/Code/CodeContext'
 import {Button} from "antd";
 
+import Emulator from "./Emulator";
+import Editor from "./Editor";
+
 const Code = () => {
   const CodeContext = useContext(codeContext);
 
   return (
     <>
-      <h1>{CodeContext.code}</h1>
       <Button onClick={() => {CodeContext.setCode(CodeContext.code + '!')}}>Add</Button>
+      <Emulator />
+      <Editor />
     </>
   )
 

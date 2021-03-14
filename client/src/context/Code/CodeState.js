@@ -7,7 +7,12 @@ import {SET_CODE} from "../types";
 
 const CodeState = (props) => {
   let initialState = {
-    code: ''
+    code: '' +
+      'async function loop() {\n' +
+      '\t// Your code goes here\n' +
+      '\tawait sleep(46);\n' +
+      '\tNextFrame();\n' +
+      '}'
   };
 
   const [state, dispatch] = useReducer(CodeReducer, initialState);
