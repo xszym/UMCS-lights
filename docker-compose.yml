@@ -5,10 +5,8 @@ services:
     image: postgres:9.6.21-alpine
     volumes:
       - ./database/:/var/lib/postgresql/data/
-    environment:
-      - POSTGRES_DB=postgres
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+    env_file:
+      - .env
   backend:
     build: ./backend
     command: python manage.py runserver 0.0.0.0:8000
