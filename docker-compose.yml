@@ -1,12 +1,6 @@
 version: '3.8'
 
 services:
-  database:
-    image: postgres:9.6.21-alpine
-    volumes:
-      - ./database/:/var/lib/postgresql/data/
-    env_file:
-      - .env
   backend:
     build: ./backend
     command: python manage.py runserver 0.0.0.0:8000
@@ -18,3 +12,9 @@ services:
       - ./backend/.env.dev
     depends_on:
       - database
+  database:
+    image: postgres:9.6.21-alpine
+    volumes:
+      - ./database/:/var/lib/postgresql/data/
+    env_file:
+      - ./backend/.env.dev

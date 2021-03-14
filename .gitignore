@@ -6,3 +6,4 @@ venv
 database/
 .env
 .pytest_cache
+node_modules
