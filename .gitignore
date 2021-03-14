@@ -3,3 +3,4 @@ env
 venv
 *.sqlite3
 .idea
+database/
