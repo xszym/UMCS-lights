@@ -10,9 +10,11 @@ const Code = () => {
 
   return (
     <>
-      <Button onClick={() => {CodeContext.setCode(CodeContext.code + '!')}}>Add</Button>
-      <Emulator />
-      <Editor />
+      <Button onClick={() => {
+        CodeContext.setCode(CodeContext.code + '!')
+      }}>Add</Button>
+      <Emulator/>
+      <Editor/>
     </>
   )
 

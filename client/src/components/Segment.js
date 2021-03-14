@@ -1,4 +1,4 @@
-const Segment = ({ color, id }) => {
+const Segment = ({color, id}) => {
 
   const getColorRGBA = (color) => {
     let rgb_sum = color[0] + color[1] + color[2];

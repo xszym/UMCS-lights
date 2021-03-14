@@ -9,7 +9,7 @@ export default (state, action) => {
         ...state,
         code: payload
       };
-      default:
-        return state;
+    default:
+      return state;
   }
 };

@@ -19,7 +19,7 @@ const CodeState = (props) => {
 
   const setCode = (code) => {
     console.log(code)
-    dispatch({ type: SET_CODE, payload: code});
+    dispatch({type: SET_CODE, payload: code});
   };
 
   return (

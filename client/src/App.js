@@ -8,7 +8,7 @@ import CodeState from './context/Code/CodeState';
 function App() {
   return (
     <CodeState>
-      <Code />
+      <Code/>
     </CodeState>
   );
 }
