@@ -3,4 +3,6 @@ env
 venv
 *.sqlite3
 .idea
+database/
+.env
 .pytest_cache
