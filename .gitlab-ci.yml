@@ -34,7 +34,7 @@ test_backend_django_tests:
       artifacts: true
   script:
     - docker pull $CI_REGISTRY_IMAGE:latest || true
-    - docker run backend python manage.py test
+    - docker run $CI_REGISTRY_IMAGE:latest python manage.py test
 
 test_backend_django_pytest:
   stage: test
@@ -43,7 +43,7 @@ test_backend_django_pytest:
       artifacts: true
   script:
     - docker pull $CI_REGISTRY_IMAGE:latest || true
-    - docker run backend pytest
+    - docker run $CI_REGISTRY_IMAGE:latest pytest
 
 test_frontend:
   stage: test
