@@ -3,9 +3,27 @@ stages:
   - test
   - deploy
 
-image: docker:19.03.12
+variables:
+  DOCKER_HOST: tcp://docker:2375/
+  DOCKER_DRIVER: overlay2
+
+# Official docker compose image.
+image:
+  name: docker/compose:latest
 services:
-  - docker:19.03.12-dind
+  - docker:dind
+
+before_script:
+  - docker version
+  - docker-compose version
+
+build_docker_compose:
+  stage: build
+  script:
+    - docker-compose down
+    - docker-compose build
+    - docker-compose up tester-image
+
 
 build_backend:
   stage: build
