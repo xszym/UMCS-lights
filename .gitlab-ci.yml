@@ -1,22 +1,15 @@
 build-docker:
-  image: docker/compose:latest
-
+  image: docker:19.03.12
   variables:
-    DOCKER_HOST: tcp://docker:2375/
-    DOCKER_DRIVER: overlay2
     DOCKER_TLS_CERTDIR: "/certs"
-
   services:
-    - docker:dind
-
+    - docker:19.03.12-dind
   before_script:
-    - docker version
-    - docker-compose version
-
+    - docker info
+    - docker -v
   stage: build
   script:
-    - docker-compose down
-    - docker-compose build
+    - docker build ./backend
   #    - docker run my-docker-image /script/to/run/tests
 
 
