@@ -31,7 +31,7 @@ test_frontend:
   stage: test
   needs: [build_frontend]
   script:
-    - echo "Testing fronted script will go here"
+    - echo "Testing fronted script will go here!"
 
 deploy_backend:
   stage: deploy
