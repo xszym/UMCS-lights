@@ -8,29 +8,21 @@ services:
   - docker:19.03.12-dind
 
 build_backend:
-  stage: build
+  stage:
+    - test
+    - build
   before_script:
     - docker info
     - docker -v
   script:
     - docker build ./backend -t backend
+    - docker run backend python manage.py test
+    - docker run backend pytest
 
 build_frontend:
   stage: build
   script:
     - echo "Here will go building frontend script"
-
-test_backend_django_tests:
-  stage: test
-  needs: [build_backend]
-  script:
-    - docker run backend python manage.py test
-
-test_backend_django_pytest:
-  stage: test
-  needs: [build_backend]
-  script:
-    - docker run backend pytest
 
 test_frontend:
   stage: test
@@ -41,8 +33,7 @@ test_frontend:
 deploy_backend:
   stage: deploy
   needs:
-    - test_backend_django_pytest
-    - test_backend_django_tests
+    - build_backend
   script:
     - echo "Deploy backend script goes here."
 
