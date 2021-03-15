@@ -13,6 +13,7 @@ build-docker:
   stage: build
   script:
     - docker -v
+    - apk add --no-cache docker-compose
     - docker-compose -v
     - docker-compose build
   #    - docker run my-docker-image /script/to/run/tests
