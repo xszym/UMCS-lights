@@ -1,10 +1,9 @@
-variables:
-  DOCKER_DRIVER: overlay2
-  DOCKER_HOST: tcp://localhost:2375
+#variables:
+#  DOCKER_DRIVER: overlay2
+#  DOCKER_HOST: tcp://localhost:2375
 
 services:
 - docker:dind
-
 
 build-job:
   image: docker:stable
