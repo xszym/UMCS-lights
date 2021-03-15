@@ -3,15 +3,14 @@ build-job:
   script:
     - echo "Hello, $GITLAB_USER_LOGIN!"
 
-docker-build:
-  image: docker
-  stage: build
-  services:
-    - docker:dind
-  build:
-    script:
-      - apk add --no-cache docker-compose
-      - docker-compose up -d
+image: docker
+stage: build
+services:
+  - docker:dind
+build:
+  script:
+    - apk add --no-cache docker-compose
+    - docker-compose up -d
 
 test-job1:
   stage: test
