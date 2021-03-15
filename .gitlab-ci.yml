@@ -8,7 +8,7 @@ docker-build:
     DOCKER_TLS_CERTDIR: "/certs"
 
   services:
-    - docker:lastest-dind
+    - docker:dind
 
   before_script:
     - docker info
