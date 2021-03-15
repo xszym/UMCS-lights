@@ -10,10 +10,9 @@ build-docker:
   before_script:
     - docker info
 
-  build:
-    stage: build
-    script:
-      - docker -v
+  stage: build
+  script:
+    - docker -v
   #    - docker run my-docker-image /script/to/run/tests
 
 
