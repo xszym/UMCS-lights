@@ -3,77 +3,14 @@ stages:
   - test
   - deploy
 
-image: docker:19.03.12
-services:
-  - docker:19.03.12-dind
+image: tiangolo/docker-with-compose
 
 before_script:
-  - apk add --no-cache py-pip
-  - pip install docker-compose
   - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
 
-build_docker_compse:
-  before_script:
-    - docker version
-    - docker-compose version
-  stage: build
+ci:
   script:
     - docker-compose build
-#    - docker-compose up
-
-
-build_backend:
-  stage: build
-  before_script:
-    - docker info
-    - docker -v
-    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
-  script:
-    - docker pull $CI_REGISTRY_IMAGE:latest || true
-    - docker build --cache-from $CI_REGISTRY_IMAGE:latest --tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA --tag $CI_REGISTRY_IMAGE:latest ./backend
-    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
-    - docker push $CI_REGISTRY_IMAGE:latest
-
-build_frontend:
-  stage: build
-  script:
-    - echo "Here will go building frontend script"
-
-test_backend_django_tests:
-  stage: test
-  needs:
-    - job: build_backend
-      artifacts: true
-  script:
-    - docker pull $CI_REGISTRY_IMAGE:latest || true
-    - docker run $CI_REGISTRY_IMAGE:latest python manage.py test
-
-test_backend_django_pytest:
-  stage: test
-  needs:
-    - job: build_backend
-      artifacts: true
-  script:
-    - docker pull $CI_REGISTRY_IMAGE:latest || true
-    - docker run $CI_REGISTRY_IMAGE:latest pytest
-
-test_frontend:
-  stage: test
-  needs: [build_frontend]
-  script:
-    - echo "Testing fronted script will go here!"
-
-deploy_backend:
-  stage: deploy
-  needs:
-    - test_backend_django_pytest
-    - test_backend_django_tests
-  script:
-    - echo "Deploy backend script goes here."
-
-deploy_fronted:
-  stage: deploy
-  needs:
-    - test_frontend
-  script:
-    - echo "Deploy frontend script goes here."
+    - docker-compose up -d
+    - docker-compose exec -T pytest
+    - docker-compose down -v
