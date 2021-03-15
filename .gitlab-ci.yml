@@ -8,8 +8,8 @@ services:
   - docker:19.03.12-dind
 
 build_docker_compse:
-  image: docker/compose:latest
   before_script:
+    - apk add --no-cache docker-compose
     - docker version
     - docker-compose version
   stage: build
