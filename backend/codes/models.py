@@ -12,7 +12,6 @@ class Languages(models.IntegerChoices):
 
 
 class Code(models.Model):
-    id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=30)
     author = models.CharField(max_length=30)
     description = models.CharField(max_length=200, blank=True, null=True)

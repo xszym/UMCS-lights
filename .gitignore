@@ -7,4 +7,3 @@ database/
 .env
 .pytest_cache
 node_modules
-backend/codes/migrations/*
