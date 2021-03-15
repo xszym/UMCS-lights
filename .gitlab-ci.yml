@@ -7,6 +7,18 @@ image: docker:19.03.12
 services:
   - docker:19.03.12-dind
 
+build_docker_compse:
+  image: docker/compose:latest
+  before_script:
+    - docker version
+    - docker-compose version
+  stage: build
+    script:
+      - docker-compose down
+      - docker-compose build
+      - docker-compose up
+
+
 build_backend:
   stage: build
   before_script:
@@ -18,9 +30,6 @@ build_backend:
     - docker build --cache-from $CI_REGISTRY_IMAGE:latest --tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA --tag $CI_REGISTRY_IMAGE:latest ./backend
     - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
     - docker push $CI_REGISTRY_IMAGE:latest
-#    - docker build --pull -t "$CI_REGISTRY_IMAGE" .
-#    - docker push "$CI_REGISTRY_IMAGE"
-    #    - docker build ./backend -t backend
 
 build_frontend:
   stage: build
