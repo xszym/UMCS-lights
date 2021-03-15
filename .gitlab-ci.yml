@@ -16,28 +16,42 @@ test-job2:
     - echo "which simulates a test that runs 20 seconds longer than test-job1"
     - sleep 20
 
-test-job3:
-  image: docker:19.03.0
+#test-job3:
+#  image: docker:19.03.0
+#
+#  variables:
+#    DOCKER_DRIVER: overlay2
+#    # Create the certificates inside this directory for both the server
+#    # and client. The certificates used by the client will be created in
+#    # /certs/client so we only need to share this directory with the
+#    # volume mount in `config.toml`.
+#    DOCKER_TLS_CERTDIR: "/certs"
+#
+#  services:
+#    - docker:19.03.0-dind
+#
+#  before_script:
+#    - apk --no-cache add docker-compose
+#    - docker info
+#    - docker-compose --version
+#
+#  stage: test
+#  script:
+#    - docker-compose build
 
-  variables:
-    DOCKER_DRIVER: overlay2
-    # Create the certificates inside this directory for both the server
-    # and client. The certificates used by the client will be created in
-    # /certs/client so we only need to share this directory with the
-    # volume mount in `config.toml`.
-    DOCKER_TLS_CERTDIR: "/certs"
 
+test-job4:
+  image: tmaier/docker-compose:latest
   services:
-    - docker:19.03.0-dind
-
+    - docker:dind
   before_script:
-    - apk --no-cache add docker-compose
     - docker info
     - docker-compose --version
+  build image:
+    stage: build
+    script:
+      - docker-compose build
 
-  stage: test
-  script:
-    - docker-compose build
 
 deploy-prod:
   stage: deploy
