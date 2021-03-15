@@ -18,7 +18,7 @@ build-job:
 test-job1:
   stage: test
   script:
-    - echo "This job tests something1"
+    - echo "This job tests something12"
 
 test-job2:
   stage: test
