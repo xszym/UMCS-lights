@@ -9,22 +9,19 @@ build-docker:
     - docker -v
   stage: build
   script:
-    - docker build ./backend
-  #    - docker run my-docker-image /script/to/run/tests
+    - docker build ./backend -t backend
+#    - docker run my-docker-image /script/to/run/tests
 
 
 test-job1:
   stage: test
   script:
-    - echo "This job tests something123"
+    - docker run backend python manage.py test
 
 test-job2:
   stage: test
   script:
-    - echo "This job tests something, but takes more time than test-job1."
-    - echo "After the echo commands complete, it runs the sleep command for 2 seconds"
-    - echo "which simulates a test that runs 20 seconds longer than test-job1"
-    - sleep 2
+    - docker run backend pytest
 
 deploy-prod:
   stage: deploy
