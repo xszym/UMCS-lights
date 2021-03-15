@@ -1,10 +1,7 @@
 build-job:
-  image: docker:18-git
-  variables:
-    DOCKER_HOST: tcp://docker:2375/
-    DOCKER_DRIVER: overlay2
+  image: docker:latest
   services:
-    - docker:18-dind
+    - docker:dind
   before_script:
     - docker info
     - docker-compose --version
