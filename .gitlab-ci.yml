@@ -1,7 +1,13 @@
+variables:
+  DOCKER_DRIVER: overlay2
+  DOCKER_HOST: tcp://localhost:2375
+
+services:
+- docker:dind
+
+
 build-job:
-  image: docker:latest
-  services:
-    - docker:dind
+  image: docker:stable
   before_script:
     - docker info
     - docker-compose --version
