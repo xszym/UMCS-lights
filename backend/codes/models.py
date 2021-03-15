@@ -22,3 +22,6 @@ class Code(models.Model):
     date_approved = models.DateTimeField(null=True)
     language = models.IntegerField(choices=Languages.choices, default=Languages.JAVASCRIPT)
     is_example = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f'Code {self.id} {self.name}'
