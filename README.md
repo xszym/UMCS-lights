@@ -1,5 +1,7 @@
 # UMCS-lights
 
+![Pipeline status](https://gitlab.com/xszym/UMCS-lights/badges/development/pipeline.svg)
+
 The building of the Institute of Computer Science at University of Marie Curie Sklodowska is equipped with lights. Each window has a RGB LED panel that can be programmed.
 
 The application will allow users to create scenes and animations that will be displayed on the Institute Building. Additionally, the moderator will be able to manage the displayed animation and the queue of future animations.
@@ -19,6 +21,14 @@ The application will allow users to create scenes and animations that will be di
 
 # Run application
 `docker-compose up`
+
+
+## Migrations
+Run migrations when server is running
+
+```docker-compose exec backend python manage.py makemigrations```
+
+```docker-compose exec backend python manage.py migrate```
 
 ## Testing
 `docker-compose exec backend pytest`

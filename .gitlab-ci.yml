@@ -1,0 +1,30 @@
+image: tmaier/docker-compose:latest
+
+services:
+  - docker:dind
+
+before_script:
+  - docker info
+  - docker-compose --version
+  - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+
+build_backend:
+  stage: build
+  tags:
+    - docker
+  script:
+    - docker-compose build
+
+test_backend:
+  stage: test
+  tags:
+    - docker
+  script:
+    - docker-compose run backend pytest
+
+deploy_backend:
+  stage: deploy
+  tags:
+    - docker
+  script:
+    - echo "Deploy script go here"
