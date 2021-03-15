@@ -1,20 +1,21 @@
-docker-build:
-  stage: build
-
-  image:
-    name: docker:lastest
+build-docker:
+  image: docker:19.03.12
 
   variables:
     DOCKER_TLS_CERTDIR: "/certs"
 
   services:
-    - docker:dind
+    - docker:19.03.12-dind
 
   before_script:
     - docker info
-    - docker-compose --version
-  script:
-    - docker-compose build
+
+  build:
+    stage: build
+    script:
+      - docker -v
+  #    - docker run my-docker-image /script/to/run/tests
+
 
 test-job1:
   stage: test
