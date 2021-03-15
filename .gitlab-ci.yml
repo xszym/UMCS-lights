@@ -24,7 +24,7 @@ test_backend_django_tests:
   stage: test
   needs:
     - job: build_backend
-    artifacts: true
+      artifacts: true
   script:
     - docker run backend python manage.py test
 
@@ -32,7 +32,7 @@ test_backend_django_pytest:
   stage: test
   needs:
     - job: build_backend
-    artifacts: true
+      artifacts: true
   script:
     - docker run backend pytest
 
