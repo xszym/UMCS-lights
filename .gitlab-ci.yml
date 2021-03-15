@@ -20,5 +20,4 @@ test_backend:
   tags:
     - docker
   script:
-    - docker-compose up -d
-    - docker-compose exec backend pytest
+    - docker-compose run backend pytest
