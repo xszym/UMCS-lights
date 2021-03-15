@@ -3,15 +3,6 @@ build-job:
   script:
     - echo "Hello, $GITLAB_USER_LOGIN!"
 
-image: docker
-stage: build
-services:
-  - docker:dind
-build:
-  script:
-    - apk add --no-cache docker-compose
-    - docker-compose up -d
-
 test-job1:
   stage: test
   script:
@@ -24,6 +15,29 @@ test-job2:
     - echo "After the echo commands complete, it runs the sleep command for 20 seconds"
     - echo "which simulates a test that runs 20 seconds longer than test-job1"
     - sleep 20
+
+test-job3:
+  image: docker:19.03.0
+
+  variables:
+    DOCKER_DRIVER: overlay2
+    # Create the certificates inside this directory for both the server
+    # and client. The certificates used by the client will be created in
+    # /certs/client so we only need to share this directory with the
+    # volume mount in `config.toml`.
+    DOCKER_TLS_CERTDIR: "/certs"
+
+  services:
+    - docker:19.03.0-dind
+
+  before_script:
+    - apk --no-cache add docker-compose
+    - docker info
+    - docker-compose --version
+
+  stage: test
+  script:
+    - docker-compose build
 
 deploy-prod:
   stage: deploy
