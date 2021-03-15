@@ -2,23 +2,14 @@ docker-build:
   stage: build
 
   image:
-    # An alpine-based image with the `docker` CLI installed.
-    name: docker:stable
-
-  # This will run a Docker daemon in a container (Docker-In-Docker), which will
-  # be available at thedockerhost:2375. If you make e.g. port 5000 public in Docker
-  # (`docker run -p 5000:5000 yourimage`) it will be exposed at thedockerhost:5000.
-  services:
-   - name: docker:dind
-     alias: thedockerhost
+    name: docker:lastest
 
   variables:
-    # Tell docker CLI how to talk to Docker daemon; see
-    # https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#use-docker-in-docker-executor
-    DOCKER_HOST: tcp://thedockerhost:2375/
-    # Use the overlayfs driver for improved performance:
-    DOCKER_DRIVER: overlay2
-    DOCKER_TLS_CERTDIR: ""
+    DOCKER_TLS_CERTDIR: "/certs"
+
+  services:
+    - docker:lastest-dind
+
   before_script:
     - docker info
     - docker-compose --version
