@@ -19,7 +19,7 @@ docker-build:
 test-job1:
   stage: test
   script:
-    - echo "This job tests something12"
+    - echo "This job tests something123"
 
 test-job2:
   stage: test
