@@ -6,11 +6,19 @@ services:
 before_script:
   - docker info
   - docker-compose --version
+  - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
 
 build_backend:
   stage: build
   tags:
     - docker
   script:
-    - docker-compose build
-    - docker-compose run backend pytest
+    - docker-compose build --pull
+
+test_backend:
+  stage: test
+  tags:
+    - docker
+  script:
+    - docker-compose up -d
+    - docker-compose exec backend pytest
