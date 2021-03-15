@@ -1,7 +1,8 @@
 build-job:
-  image: tmaier/docker-compose:latest
+  image: docker:latest
   services:
     - docker:dind
+  alias: docker
   before_script:
     - docker info
     - docker-compose --version
