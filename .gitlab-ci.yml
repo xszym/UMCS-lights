@@ -1,20 +1,19 @@
 build-docker:
-  image: docker:19.03.12
+  image: docker/compose:latest
 
   variables:
     DOCKER_TLS_CERTDIR: "/certs"
 
   services:
-    - docker:19.03.12-dind
+    - docker:dind
 
   before_script:
-    - docker info
+    - docker version
+    - docker-compose version
 
   stage: build
   script:
-    - docker -v
-    - apk add --no-cache docker-compose
-    - docker-compose -v
+    - docker-compose down
     - docker-compose build
   #    - docker run my-docker-image /script/to/run/tests
 
