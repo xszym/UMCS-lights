@@ -13,10 +13,10 @@ build_docker_compse:
     - docker version
     - docker-compose version
   stage: build
-    script:
-      - docker-compose down
-      - docker-compose build
-      - docker-compose up
+  script:
+    - docker-compose down
+    - docker-compose build
+    - docker-compose up
 
 
 build_backend:
