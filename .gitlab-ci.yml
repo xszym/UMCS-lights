@@ -6,23 +6,11 @@ services:
 before_script:
   - docker info
   - docker-compose --version
-  - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
 
 build_backend:
   stage: build
   tags:
     - docker
   script:
-    - docker-compose pull $CI_REGISTRY_IMAGE:latest || true
-    - docker-compose build --cache-from $CI_REGISTRY_IMAGE:latest --tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA --tag $CI_REGISTRY_IMAGE:latest .
-    - docker-compose push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
-    - docker-compose push $CI_REGISTRY_IMAGE:latest
-
-test_backend_django_pytest:
-  stage: test
-  needs:
-    - job: build_backend
-      artifacts: true
-  script:
-    - docker-compose pull $CI_REGISTRY_IMAGE:latest || true
-    - docker-compose run $CI_REGISTRY_IMAGE:latest pytest
+    - docker-compose build
+    - docker-compose run backend pytest
