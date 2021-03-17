@@ -20,7 +20,7 @@ test_backend:
   tags:
     - docker
   script:
-    - docker-compose up -d
+    - docker-compose up -d -f docker-compose.tests.yml
     - docker-compose exec -T backend pytest
 
 deploy_backend:
