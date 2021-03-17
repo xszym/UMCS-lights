@@ -5,4 +5,5 @@ from .models import Code
 class CodeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Code
-        fields = ['name', 'author', 'description', 'code', 'language']
+        fields = ['pk', 'name', 'author', 'description', 'code', 'language']
+        read_only_fields = ['pk']
