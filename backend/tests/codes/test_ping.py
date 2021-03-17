@@ -5,7 +5,7 @@ from rest_framework import status
 
 def test_hello_world():
     assert "hello_world" == "hello_world"
-    assert "foo" != "bar"
+    assert "foo" == "bar"
 
 
 def test_ping(client):
