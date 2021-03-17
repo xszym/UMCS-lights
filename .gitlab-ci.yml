@@ -21,7 +21,7 @@ test_backend:
     - docker
   script:
     - docker-compose up -d
-    - docker-compose run backend pytest
+    - docker-compose exec -T backend pytest
 
 deploy_backend:
   stage: deploy
