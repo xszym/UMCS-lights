@@ -18,7 +18,7 @@ class Code(models.Model):
     date = models.DateTimeField(auto_now_add=True)
     code = models.TextField(max_length=10000)
     approved = models.BooleanField(default=False)
-    date_approved = models.DateTimeField(null=True)
+    date_approved = models.DateTimeField(blank=True, null=True)
     language = models.IntegerField(choices=Languages.choices, default=Languages.JAVASCRIPT)
     is_example = models.BooleanField(default=False)
 
