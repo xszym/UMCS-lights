@@ -7,21 +7,45 @@ from codes.models import Code
 
 
 @pytest.mark.django_db
-def test_add_code(client):
+@pytest.mark.parametrize('data',
+    [
+        {'name': 'TestCorrect', 'author': 'Maciej', 'code': 'print(1)'},
+        {'name': 'SomeWeirdField', 'SomeWeirdField': 'SomeWeirdValue', 'author': 'Maciej', 'code': 'print(1)'},
+        {'name': 'MultilineCodeLF', 'author': 'Mateusz', 'code': '\n\nprint(1)\nprint(2)\n'},
+        {'name': 'MultilineCodeCRLF', 'author': 'Mateusz', 'code': '\r\n\r\nprint(1)\r\nprint(2)\r\n'},
+    ]
+)
+def test_add_code_created(client, data):
     url = reverse('code-list')
-    response = client.post(
-        url,
-        {
-            'name': 'Test',
-            'author': 'maciej',
-            'code': 'print(1)',
-        }
-    )
+    response = client.post(url, data)
 
     assert response.status_code == status.HTTP_201_CREATED
-    assert response.data['name'] == 'Test'
+    assert response.data['name'] == data['name']
     assert Code.objects.count() == 1
 
+
+@pytest.mark.django_db
+@pytest.mark.parametrize('data',
+    [
+        {'name': '', 'author': 'Mateusz', 'code': 'print(1)'},
+        {'author': 'Mateusz', 'code': 'print(1)'},
+        {'name': 'TestEmptyCode', 'author': 'Mateusz', 'code': ''},
+        {'name': 'TestEmptyCode', 'author': 'Mateusz'},
+        {'name': 'TestEmptyAuthor', 'author': '', 'code': 'print(1)'},
+        {'name': 'TestEmptyAuthor', 'code': 'print(1)'},
+        {'name': '', 'author': '', 'code': ''},
+        {},
+        {'name': '\0', 'author': 'Maciej', 'code': 'print(1)'},
+        {'name': 'AuthorWithNull', 'author': '\0', 'code': 'print(1)'},
+        {'name': 'CodeWithNull', 'author': 'Mateusz', 'code': '\0'},
+    ]
+)
+def test_add_code_bad_request(client, data):
+    url = reverse('code-list')
+    response = client.post(url, data)
+
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+    assert Code.objects.count() == 0
 
 @pytest.mark.django_db
 def test_add_code_invalid_json(client):
