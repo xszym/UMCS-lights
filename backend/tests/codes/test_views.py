@@ -115,3 +115,16 @@ def test_get_codes_list_mixed(client):
 
     assert response.status_code == status.HTTP_200_OK
     assert len(response.data) == number_of_example_codes
+
+
+@pytest.mark.django_db
+def test_get_codes_list_big_number_of_codes(client):
+    number_of_example_codes = 1000
+    list_of_codes = factories.CodeFactory.create_batch(number_of_example_codes, is_example=True)
+
+    url = reverse('code-list')
+    response = client.get(url)
+
+    assert response.status_code == status.HTTP_200_OK
+    assert len(response.data) == number_of_example_codes
+    
