@@ -77,3 +77,54 @@ def test_get_single_code_no_example(client):
     response = client.get(url)
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
+
+
+@pytest.mark.django_db
+def test_get_codes_list(client):
+    number_of_example_codes = 4
+    list_of_codes = factories.CodeFactory.create_batch(number_of_example_codes, is_example=True)
+
+    url = reverse('code-list')
+    response = client.get(url)
+
+    assert response.status_code == status.HTTP_200_OK
+    assert len(response.data) == number_of_example_codes
+
+
+@pytest.mark.django_db
+def test_get_codes_list_no_examples(client):
+    number_of_example_codes = 4
+    list_of_codes = factories.CodeFactory.create_batch(number_of_example_codes, is_example=False)
+
+    url = reverse('code-list')
+    response = client.get(url)
+
+    assert response.status_code == status.HTTP_200_OK
+    assert len(response.data) == 0
+
+
+@pytest.mark.django_db
+def test_get_codes_list_mixed(client):
+    number_of_example_codes = 4
+    number_of_no_example_codes = 2
+    list_of_codes_example = factories.CodeFactory.create_batch(number_of_example_codes, is_example=True)
+    list_of_codes_no_example = factories.CodeFactory.create_batch(number_of_no_example_codes, is_example=False)
+
+    url = reverse('code-list')
+    response = client.get(url)
+
+    assert response.status_code == status.HTTP_200_OK
+    assert len(response.data) == number_of_example_codes
+
+
+@pytest.mark.django_db
+def test_get_codes_list_big_number_of_codes(client):
+    number_of_example_codes = 1000
+    list_of_codes = factories.CodeFactory.create_batch(number_of_example_codes, is_example=True)
+
+    url = reverse('code-list')
+    response = client.get(url)
+
+    assert response.status_code == status.HTTP_200_OK
+    assert len(response.data) == number_of_example_codes
+    
