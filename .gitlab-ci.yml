@@ -1,14 +1,22 @@
 image: tmaier/docker-compose:latest
 
+stages:
+  - test
+  - publish
+  - deploy
+
 services:
   - docker:dind
+
+variables:
+  TAG_COMMIT: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_NAME:$CI_COMMIT_SHORT_SHA
 
 before_script:
   - docker info
   - docker-compose --version
   - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
 
-test_backend:
+test:
   stage: test
   tags:
     - docker
@@ -17,9 +25,26 @@ test_backend:
     - sleep 15
     - docker-compose exec -T backend pytest
 
-deploy_backend:
+deploy:
+  image: docker:latest
   stage: deploy
-  tags:
-    - docker
+  services:
+    - docker:dind
   script:
-    - echo "Deploy script go here"
+    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
+    - docker push ./backend:$TAG_COMMIT
+    - docker push ./backend:latest
+    - ./deploy.sh
+
+#deploy:
+#  image: alpine:latest
+#  stage: deploy
+#  tags:
+#    - deployment
+#  script:
+#    - chmod og= $ID_RSA
+#    - apk update && apk add openssh-client
+#    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP -p $SERVER_SSH_PORT "docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY"
+#    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP -p $SERVER_SSH_PORT "docker pull $TAG_COMMIT"
+#    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP -p $SERVER_SSH_PORT "docker container rm -f my-app || true"
+#    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP -p $SERVER_SSH_PORT "docker run -d -p 80:80 --name my-app $TAG_COMMIT"
