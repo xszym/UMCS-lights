@@ -33,7 +33,35 @@ Run migrations when server is running
 ## Testing
 `docker-compose exec backend pytest`
 
-# Setup deploy
+### Coverage:
+
+`docker-compose exec backend pytest -p no:warnings --cov=. --cov-report html`
+
+## Linter
+### Flake8 (formatting)
+
+`docker-compose exec backend flake8 .`
+
+### Black (formatting)
+
+`docker-compose exec backend black --check --exclude=migrations .`
+
+`docker-compose exec backend black --diff --exclude=migrations .`
+
+`docker-compose exec backend black --exclude=migrations .`
+
+### ISort (sorting)
+
+`docker-compose exec backend isort . --check-only`
+
+`docker-compose exec backend isort . --diff`
+
+Apply changes
+
+`docker-compose exec backend isort .`
+
+
+## Setup deploy
 1. Login to your ssh server (Install docker and docker-compose)
 2. Create new user:  
    `sudo adduser deployer`
@@ -74,5 +102,7 @@ Run migrations when server is running
     Environment scope: All (default)
     Protect variable: Checked
     Mask variable: Checked
+    
+    
 10. Clone this repository `git clone https://github.com/xszym/UMCS-lights/`
 11. To fix issue with `Remote error from secret service: org.freedesktop.DBus.Error.UnknownMethod: No such interface 'org.freedesktop.Secret.Collection' on object at path /org/freedesktop/secrets/collection/login` install `sudo apt install gnupg2 pass`

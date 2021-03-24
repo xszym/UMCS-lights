@@ -7,3 +7,6 @@ database/
 .env
 .pytest_cache
 node_modules
+.coverage
+.coveragerc
+htmlcov/
