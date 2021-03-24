@@ -29,8 +29,8 @@ deploy:
   tags:
     - docker
   script:
-    - docker push backend:latest
-    - docker push backend:$TAG_COMMIT
+    - docker-compose push
+#    - docker push backend:$TAG_COMMIT
     - ./deploy.sh
 
 #deploy:
