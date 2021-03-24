@@ -30,6 +30,8 @@ deploy:
     - docker
   script:
     - docker-compose push
+    - chmod og= $ID_RSA
+    - apk update && apk add openssh-client
     - ssh -i $ID_RSA $SERVER_USER@$SERVER_IP -p $SERVER_SSH_PORT "cd UMCS-lights && git pull"
     - ssh -i $ID_RSA $SERVER_USER@$SERVER_IP -p $SERVER_SSH_PORT -o StrictHostKeyChecking=no "docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY"
     - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP -p $SERVER_SSH_PORT "docker-compose pull"
