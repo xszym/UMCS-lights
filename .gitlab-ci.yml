@@ -30,8 +30,15 @@ deploy:
     - docker
   script:
     - docker-compose push
+    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP -p $SERVER_SSH_PORT "git pull UMCS-lights/"
+    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP -p $SERVER_SSH_PORT "docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY"
+    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP -p $SERVER_SSH_PORT "docker-compose pull"
+    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP -p $SERVER_SSH_PORT "docker-compose stop"
+    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP -p $SERVER_SSH_PORT "docker-compose rm -f"
+    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP -p $SERVER_SSH_PORT "docker-compose up -d"
+
 #    - docker push backend:$TAG_COMMIT
-    - ./deploy.sh
+#    - ./deploy.sh
 
 #deploy:
 #  image: alpine:latest
