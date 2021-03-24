@@ -32,3 +32,30 @@ Run migrations when server is running
 
 ## Testing
 `docker-compose exec backend pytest`
+
+### Coverage:
+
+`docker-compose exec backend pytest -p no:warnings --cov=. --cov-report html`
+
+## Linter
+### Flake8 (formatting)
+
+`docker-compose exec backend flake8 .`
+
+### Black (formatting)
+
+`docker-compose exec backend black --check --exclude=migrations .`
+
+`docker-compose exec backend black --diff --exclude=migrations .`
+
+`docker-compose exec backend black --exclude=migrations .`
+
+### ISort (sorting)
+
+`docker-compose exec backend isort . --check-only`
+
+`docker-compose exec backend isort . --diff`
+
+Apply changes
+
+`docker-compose exec backend isort .`
