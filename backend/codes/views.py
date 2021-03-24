@@ -3,47 +3,18 @@ from .serializers import CodeSerializer
 from .models import Code
 
 
-class AllCodesViewSet(viewsets.ModelViewSet):
+class CodesViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.AllowAny]
     http_method_names = ['get', 'post']
     serializer_class = CodeSerializer
 
     def get_queryset(self):
-        queryset = Code.objects
-        return queryset
 
-class ExampleCodesViewSet(viewsets.ModelViewSet):
-    permission_classes = [permissions.AllowAny]
-    http_method_names = ['get', 'post']
-    serializer_class = CodeSerializer
-
-    def get_queryset(self):
-        queryset = Code.objects.filter(is_example=True)
-        return queryset
-
-class NonExampleCodesViewSet(viewsets.ModelViewSet):
-    permission_classes = [permissions.AllowAny]
-    http_method_names = ['get', 'post']
-    serializer_class = CodeSerializer
-
-    def get_queryset(self):
-        queryset = Code.objects.filter(is_example=False)
-        return queryset
-
-class ApprovedCodesViewSet(viewsets.ModelViewSet):
-    permission_classes = [permissions.AllowAny]
-    http_method_names = ['get', 'post']
-    serializer_class = CodeSerializer
-
-    def get_queryset(self):
-        queryset = Code.objects.filter(approved=True)
-        return queryset
-
-class UnapprovedCodesViewSet(viewsets.ModelViewSet):
-    permission_classes = [permissions.AllowAny]
-    http_method_names = ['get', 'post']
-    serializer_class = CodeSerializer
-
-    def get_queryset(self):
-        queryset = Code.objects.filter(approved=False)
+        queryset = Code.objects.all()
+        example = self.request.query_params.get('example')
+        approved = self.request.query_params.get('approved')
+        if example:
+            queryset = queryset.filter(is_example=example)
+        elif approved:
+            queryset = queryset.filter(approved=approved)
         return queryset
