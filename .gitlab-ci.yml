@@ -8,13 +8,6 @@ before_script:
   - docker-compose --version
   - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
 
-build_backend:
-  stage: build
-  tags:
-    - docker
-  script:
-    - docker-compose build
-
 test_backend:
   stage: test
   tags:
