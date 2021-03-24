@@ -21,7 +21,7 @@ test:
     - docker
   script:
     - docker-compose -f docker-compose.tests.yml up -d
-    - sleep 15
+    - sleep 13
     - docker-compose exec -T backend pytest
 
 deploy:
