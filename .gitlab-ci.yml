@@ -15,24 +15,22 @@ before_script:
   - docker-compose --version
   - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
 
-test:
-  stage: test
-  tags:
-    - docker
-  script:
-    - docker-compose -f docker-compose.tests.yml up -d
-    - sleep 13
-    - docker-compose exec -T backend pytest
+#test:
+#  stage: test
+#  tags:
+#    - docker
+#  script:
+#    - docker-compose -f docker-compose.tests.yml up -d
+#    - sleep 13
+#    - docker-compose exec -T backend pytest
 
 deploy:
   stage: deploy
-  services:
-    - docker:dind
   tags:
     - docker
   script:
-    - docker push backend:$TAG_COMMIT
     - docker push backend:latest
+    - docker push backend:$TAG_COMMIT
     - ./deploy.sh
 
 #deploy:
