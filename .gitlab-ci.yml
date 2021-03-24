@@ -31,8 +31,8 @@ deploy:
   tags:
     - docker
   script:
-    - docker push ./backend:$TAG_COMMIT
-    - docker push ./backend:latest
+    - docker push backend:$TAG_COMMIT
+    - docker push backend:latest
     - ./deploy.sh
 
 #deploy:
