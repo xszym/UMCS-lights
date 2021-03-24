@@ -30,6 +30,7 @@ deploy:
     - docker
   script:
     - docker-compose push
+    - echo "${ID_RSA}" | ssh-add -
     - chmod og= $ID_RSA
     - apk update && apk add openssh-client
     - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP -p $SERVER_SSH_PORT "cd UMCS-lights && git pull"
