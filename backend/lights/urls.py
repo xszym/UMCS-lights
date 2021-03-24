@@ -7,8 +7,7 @@ from .views import ping
 
 
 router = routers.DefaultRouter()
-router.register(r'code/?', codes_views.CodeViewSet, basename='code')
-
+router.register(r'codes/?', codes_views.CodesViewSet, basename='codes')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
