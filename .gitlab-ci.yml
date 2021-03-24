@@ -25,12 +25,12 @@ test:
     - docker-compose exec -T backend pytest
 
 deploy:
-  image: docker:latest
   stage: deploy
   services:
     - docker:dind
+  tags:
+    - docker
   script:
-    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
     - docker push ./backend:$TAG_COMMIT
     - docker push ./backend:latest
     - ./deploy.sh
