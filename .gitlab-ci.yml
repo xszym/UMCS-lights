@@ -36,3 +36,6 @@ deploy:
       docker-compose stop &&
       docker-compose rm -f &&
       docker-compose -f docker-compose.prod.yml up -d"
+  only:
+    - main
+    - development
