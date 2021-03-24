@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   backend:
-    build: ./backend:latest
+    build: ./backend
     command: ["./wait-for-it.sh", "database:5432", "--", "python", "manage.py", "runserver", "0.0.0.0:8000"]
     volumes:
       - ./backend/:/usr/src/app/
@@ -14,7 +14,7 @@ services:
       - database
       - redis
   celery:
-    build: ./backend:latest
+    build: ./backend
     command: celery -A lights worker -l INFO
     volumes:
       - ./backend/:/user/src/app/
