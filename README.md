@@ -75,3 +75,4 @@ Run migrations when server is running
     Protect variable: Checked
     Mask variable: Checked
 10. Clone this repository `git clone https://github.com/xszym/UMCS-lights/`
+11. To fix issue with `Remote error from secret service: org.freedesktop.DBus.Error.UnknownMethod: No such interface 'org.freedesktop.Secret.Collection' on object at path /org/freedesktop/secrets/collection/login` install `sudo apt install gnupg2 pass`
