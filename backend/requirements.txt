@@ -16,3 +16,4 @@ pytest-cov==2.11.1
 flake8==3.9.0
 black==20.8b1
 isort==5.8.0
+django-cors-headers==3.7.0
