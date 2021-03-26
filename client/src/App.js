@@ -5,6 +5,11 @@ import './App.css';
 import Code from './components/Code';
 import CodeState from './context/Code/CodeState';
 
+import axios from 'axios';
+
+axios.defaults.baseURL = 'http://localhost:8000';
+axios.defaults.headers.post['Content-Type'] = 'application/json';
+
 function App() {
   return (
     <CodeState>
