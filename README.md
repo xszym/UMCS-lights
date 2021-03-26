@@ -1,6 +1,7 @@
 # UMCS-lights
 
 ![Pipeline status](https://gitlab.com/xszym/UMCS-lights/badges/development/pipeline.svg)
+[![coverage report](https://gitlab.com/xszym/UMCS-lights/badges/development/coverage.svg)](https://gitlab.com/xszym/UMCS-lights/-/commits/development) 
 
 The building of the Institute of Computer Science at University of Marie Curie Sklodowska is equipped with lights. Each window has a RGB LED panel that can be programmed.
 

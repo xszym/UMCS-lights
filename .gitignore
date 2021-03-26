@@ -10,3 +10,4 @@ node_modules
 .coverage
 .coveragerc
 htmlcov/
+/backend/coverage.xml

@@ -22,7 +22,8 @@ test_backend:
   script:
     - docker-compose -f docker-compose.tests.yml up -d
     - sleep 15
-    - docker-compose exec -T backend pytest
+    - docker-compose exec -T backend pytest -p no:warnings --cov=. --cov-report html
+    - docker-compose exec -T backend coverage report --precision=2
 
 deploy_backend:
   stage: deploy
