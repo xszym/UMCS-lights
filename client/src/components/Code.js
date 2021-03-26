@@ -81,12 +81,14 @@ const Code = () => {
           <FormItem
             label="Name"
             name="name"
+            rules={[{required: true, message: 'Please input a name!'}]}
           >
             <Input/>
           </FormItem>
           <FormItem
             label="Author"
             name="author"
+            rules={[{required: true, message: 'Please input a author name!'}]}
           >
             <Input/>
           </FormItem>
