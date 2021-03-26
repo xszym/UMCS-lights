@@ -1,6 +1,6 @@
-import React, {useContext, useState, useRef} from 'react';
+import React, {useContext, useState, useRef, useEffect} from 'react';
 import codeContext from '../context/Code/CodeContext';
-import {Button, Layout, Row, Col, Typography, Modal, Table, Form, Input, Spin} from "antd";
+import {Button, Layout, Row, Col, Typography, Modal, Table, Form, Input, Spin, message, Tabs} from "antd";
 
 import Emulator from "./Emulator";
 import Editor from "./Editor";
@@ -8,33 +8,100 @@ import Editor from "./Editor";
 const {Header, Footer, Content} = Layout;
 const {Title} = Typography;
 const FormItem = Form.Item;
+const TabPane = Tabs.TabPane
 
 const Code = () => {
-  const CodeContext = useContext(codeContext);
-  const [modalCodesShow, setModalCodesShow] = useState(false);
-  const [modalFormShow, setModalFormShow] = useState(false);
+  return (
+    <>
+      <CodeIn/>
+      <ModalCodesMain/>
+      <ModalFormMain/>
+    </>
+  )
+}
 
-  const columns = [{
-    title: 'Name',
-    dataIndex: 'name',
-    render: (text, record) => (
-      <span>
+const ModalCodesMain = () => {
+  const [modalCodesShow, setModalCodesShow] = useState(false);
+
+  const ModalCodes = () => {
+    const CodeContext = useContext(codeContext);
+    const [filter, setFilter] = useState("examples")
+
+    useEffect(() => {
+      CodeContext.getCodes(filter)
+    }, [filter])
+
+    const columns = [{
+      title: 'Name',
+      dataIndex: 'name',
+      render: (text, record) => (
+        <span>
       <a onClick={() => {
         setModalCodesShow(false)
         CodeContext.setCode(record.code)
       }}>{record.name}</a>
     </span>
-    ),
-  }, {
-    title: 'Author',
-    dataIndex: 'author',
-  }, {
-    title: 'Description',
-    dataIndex: 'description',
-  }]
+      ),
+    }, {
+      title: 'Author',
+      dataIndex: 'author',
+    }, {
+      title: 'Description',
+      dataIndex: 'description',
+    }]
 
-  const ModalCodes = () => {
+    const ModalTable = () => {
+      return (
+        <Table columns={columns} dataSource={CodeContext.codes} rowKey='pk'/>
+      )
+    }
+
     return (
+      <>
+        <Tabs
+          defaultActiveKey="examples"
+          centered
+          onChange={(key) => {
+            setFilter(key)
+            CodeContext.getCodes(filter)
+          }}
+        >
+          <TabPane
+            tab={
+              <span style={{width: 200}}>
+                Examples
+               </span>
+            }
+            key="examples">
+          </TabPane>
+          <TabPane
+            tab={
+              <span style={{width: 200}}>
+                Approved
+               </span>
+            }
+            key="approved">
+          </TabPane>
+          <TabPane
+            tab={
+              <span>
+                All
+               </span>
+            }
+            key="all">
+          </TabPane>
+        </Tabs>
+        <ModalTable/>
+      </>
+    )
+  }
+
+  return (
+    <>
+      <Button onClick={() => {
+        setModalCodesShow(true)
+      }}>Codes</Button>
+
       <Modal
         title="Codes"
         style={{}}
@@ -44,14 +111,20 @@ const Code = () => {
         onCancel={() => setModalCodesShow(false)}
         footer={[]}
       >
-        <Table columns={columns} dataSource={CodeContext.codes} rowKey='pk'/>
+        <ModalCodes/>
       </Modal>
-    )
-  }
+
+    </>
+  )
+}
+
+const ModalFormMain = () => {
+  const [modalFormShow, setModalFormShow] = useState(false);
 
   const ModalForm = () => {
     const form = useRef(null);
     const [sending, setSending] = useState(false)
+    const CodeContext = useContext(codeContext);
 
     return (
       <Modal
@@ -65,44 +138,62 @@ const Code = () => {
         onCancel={() => setModalFormShow(false)}
       >
         <Spin spinning={sending}>
-        <Form
-          name="normal_login"
-          ref={form}
-          onFinish={(e) => {
-            console.log(e)
-            setSending(true)
-            CodeContext.submitCode(e)
-              .then(() => {
-                setSending(false)
-                setModalFormShow(false)
-              })
-          }}
-        >
-          <FormItem
-            label="Name"
-            name="name"
-            rules={[{required: true, message: 'Please input a name!'}]}
+          <Form
+            name="normal_login"
+            ref={form}
+            onFinish={(e) => {
+              console.log(e)
+              setSending(true)
+              CodeContext.submitCode(e)
+                .then(() => {
+                  setSending(false)
+                  setModalFormShow(false)
+                  message.success('Successfully sent animation');
+                })
+                .catch(() => {
+                  message.error('Sending animation failed');
+                  setSending(false)
+                })
+            }}
           >
-            <Input/>
-          </FormItem>
-          <FormItem
-            label="Author"
-            name="author"
-            rules={[{required: true, message: 'Please input a author name!'}]}
-          >
-            <Input/>
-          </FormItem>
-          <FormItem
-            label="Description"
-            name="description"
-          >
-            <Input/>
-          </FormItem>
-        </Form>
+            <FormItem
+              label="Name"
+              name="name"
+              rules={[{required: true, message: 'Please input a name!'}]}
+            >
+              <Input/>
+            </FormItem>
+            <FormItem
+              label="Author"
+              name="author"
+              rules={[{required: true, message: 'Please input a author name!'}]}
+            >
+              <Input/>
+            </FormItem>
+            <FormItem
+              label="Description"
+              name="description"
+            >
+              <Input/>
+            </FormItem>
+          </Form>
         </Spin>
       </Modal>
     )
   }
+
+  return (
+    <>
+      <Button onClick={() => {
+        setModalFormShow(true)
+      }}>Submit</Button>
+      <ModalForm/>
+    </>
+  )
+}
+
+const CodeIn = () => {
+  const CodeContext = useContext(codeContext);
 
   return (
     <>
@@ -129,20 +220,7 @@ const Code = () => {
             </Col>
           </Row>
         </Content>
-        <Footer>
-          <Button onClick={() => {
-            CodeContext.getCodes()
-              .then(() => {
-                setModalCodesShow(true)
-              })
-          }}>Codes</Button>
-          <Button onClick={() => {
-            setModalFormShow(true)
-          }}>Submit</Button>
-        </Footer>
       </Layout>
-      <ModalCodes/>
-      <ModalForm/>
     </>
   )
 

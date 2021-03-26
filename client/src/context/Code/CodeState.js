@@ -23,9 +23,16 @@ const CodeState = (props) => {
     dispatch({type: SET_CODE, payload: code})
   }
 
-  const getCodes = async () => {
+  const getCodes = async (filter) => {
     try {
-      const response = await axios.get('/api/codes/')
+      let queryParams = ''
+      if (filter === 'approved') {
+        queryParams = '?approved=True'
+      } else if (filter === 'examples') {
+        queryParams = '?example=True'
+      }
+
+      const response = await axios.get(`/api/codes/${queryParams}`)
       console.log(response.data)
       dispatch({type: GET_CODES, payload: response.data})
     } catch (err) {
@@ -40,6 +47,7 @@ const CodeState = (props) => {
       const response = await axios.post('/api/codes/', data)
     } catch (err) {
       console.log(err)
+      throw err
     }
   }
 
