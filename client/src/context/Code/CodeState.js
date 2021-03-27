@@ -1,9 +1,10 @@
 import React, {useReducer} from 'react'
+import axios from 'axios'
 
 import CodeContext from './CodeContext'
 import CodeReducer from './CodeReducer'
 
-import {SET_CODE} from "../types";
+import {GET_CODES, SET_CODE} from "../types"
 
 const CodeState = (props) => {
   let initialState = {
@@ -12,22 +13,53 @@ const CodeState = (props) => {
       '\t// Your code goes here\n' +
       '\tawait sleep(46);\n' +
       '\tNextFrame();\n' +
-      '}'
-  };
+      '}',
+    codes: [],
+  }
 
-  const [state, dispatch] = useReducer(CodeReducer, initialState);
+  const [state, dispatch] = useReducer(CodeReducer, initialState)
 
   const setCode = (code) => {
-    console.log(code)
-    dispatch({type: SET_CODE, payload: code});
-  };
+    dispatch({type: SET_CODE, payload: code})
+  }
+
+  const getCodes = async (filter) => {
+    try {
+      let queryParams = ''
+      if (filter === 'approved') {
+        queryParams = '?approved=True'
+      } else if (filter === 'examples') {
+        queryParams = '?example=True'
+      }
+
+      const response = await axios.get(`/api/codes/${queryParams}`)
+      console.log(response.data)
+      dispatch({type: GET_CODES, payload: response.data})
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
+  const submitCode = async (formData) => {
+    try {
+      console.log(formData)
+      const data = {...formData, 'code': state.code}
+      const response = await axios.post('/api/codes/', data)
+    } catch (err) {
+      console.log(err)
+      throw err
+    }
+  }
 
   return (
     <CodeContext.Provider
       displayName='CodeContext'
       value={{
         code: state.code,
+        codes: state.codes,
         setCode,
+        getCodes,
+        submitCode,
       }}
     >
       {props.children}
@@ -35,4 +67,4 @@ const CodeState = (props) => {
   )
 };
 
-export default CodeState;
+export default CodeState
