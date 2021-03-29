@@ -29,7 +29,7 @@ deploy:
     - docker
   script:
     - docker-compose push
-    - chmod og= $ID_RSA
+    - chmod 600 $ID_RSA
     - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP -p $SERVER_SSH_PORT
       "cd UMCS-lights &&
       git pull &&
@@ -39,6 +39,6 @@ deploy:
       docker-compose rm -f &&
       docker-compose -f docker-compose.prod.yml up -d &&
       docker-compose exec backend python manage.py migrate"
-  only:
-    - main
-    - development
+#  only:
+#    - main
+#    - development
