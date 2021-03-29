@@ -1,4 +1,4 @@
-import {SET_CODE} from '../types';
+import {SET_CODE, GET_CODES} from '../types'
 
 export default (state, action) => {
   const {payload, type} = action
@@ -7,9 +7,14 @@ export default (state, action) => {
     case SET_CODE:
       return {
         ...state,
-        code: payload
-      };
+        code: payload,
+      }
+    case GET_CODES:
+      return {
+        ...state,
+        codes: payload,
+      }
     default:
-      return state;
+      return state
   }
-};
+}
