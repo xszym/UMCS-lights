@@ -29,7 +29,6 @@ deploy:
     - docker
   script:
     - docker-compose push
-    - chmod 600 $ID_RSA
     - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP -p $SERVER_SSH_PORT
       "cd UMCS-lights &&
       git pull &&
