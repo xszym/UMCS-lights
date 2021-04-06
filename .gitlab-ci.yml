@@ -41,7 +41,6 @@ deploy:
       docker-compose -f docker-compose.prod.yml up --build -d &&
       sleep 15 &&
       docker-compose exec -T backend python manage.py migrate"
-
 #  only:
 #    - main
 #    - development
