@@ -127,4 +127,76 @@ def test_get_codes_list_big_number_of_codes(client):
 
     assert response.status_code == status.HTTP_200_OK
     assert len(response.data) == number_of_example_codes
-    
+
+
+@pytest.mark.django_db
+def test_get_single_approved_code(client):
+    code = factories.CodeFactory.create(approved=True)
+    assert Code.objects.count() == 1
+
+    url = reverse('codes-detail', args=(code.pk,))
+    response = client.get(url)
+
+    assert response.status_code == status.HTTP_200_OK
+
+
+
+@pytest.mark.django_db
+def test_get_single_code_no_approved_filtering_by_approved_true(client):
+    code = factories.CodeFactory.create(approved=False)
+
+    url = reverse('codes-detail', args=(code.pk,))
+    response = client.get(url, {'approved': True})
+
+    assert response.status_code == status.HTTP_404_NOT_FOUND
+
+
+@pytest.mark.django_db
+def test_get_approved_codes_list(client):
+    number_of_approved_codes = 4
+    list_of_codes = factories.CodeFactory.create_batch(number_of_approved_codes, approved=True)
+
+    url = reverse('codes-list')
+    response = client.get(url)
+
+    assert response.status_code == status.HTTP_200_OK
+    assert len(response.data) == number_of_approved_codes
+
+
+@pytest.mark.django_db
+def test_get_codes_list_no_approved_filtering_by_approved_true(client):
+    number_of_approved_codes = 4
+    list_of_codes = factories.CodeFactory.create_batch(number_of_approved_codes, approved=False)
+
+    url = reverse('codes-list')
+    response = client.get(url, {'approved': True})
+
+    assert response.status_code == status.HTTP_200_OK
+    assert len(response.data) == 0
+
+
+@pytest.mark.django_db
+def test_get_codes_list_mixed_filtering_by_example_true(client):
+    number_of_approved_codes = 4
+    number_of_not_approved_codes = 2
+    list_of_codes_approved = factories.CodeFactory.create_batch(number_of_approved_codes, approved=True)
+    list_of_codes_not_approved = factories.CodeFactory.create_batch(number_of_not_approved_codes, approved=False)
+
+    url = reverse('codes-list')
+    response = client.get(url, {'approved': True})
+
+    assert response.status_code == status.HTTP_200_OK
+    assert len(response.data) == number_of_approved_codes
+
+
+@pytest.mark.django_db
+def test_get_codes_list_big_number_of_codes(client):
+    number_of_approved_codes = 1000
+    list_of_codes = factories.CodeFactory.create_batch(number_of_approved_codes, approved=True)
+
+    url = reverse('codes-list')
+    response = client.get(url)
+
+    assert response.status_code == status.HTTP_200_OK
+    assert len(response.data) == number_of_approved_codes
+
