@@ -1,15 +1,12 @@
 const redis = require("redis");
-const client = redis.createClient();
+const redisClient = redis.createClient('redis://redis:6379');
 const {NodeVM} = require('vm2');
 
 // https://www.npmjs.com/package/vm2
 
-client.on("error", function(error) {
+redisClient.on("error", function(error) {
   console.error(error);
 });
-
-client.set("key", "value", redis.print);
-client.get("key", redis.print);
 
 function test() {
     console.log('123')
@@ -17,11 +14,10 @@ function test() {
 
 function _NextFrame(dmxValuesIn) {
     // Check if 'dmxValuesIn' are correct size
-    
-    console.log(dmxValuesIn)
-    // publish DMX values to world and lights
 
-    // Wrzucamy do redisa wartości
+    // console.log(dmxValuesIn)
+    // publish DMX values to world and lights
+    redisClient.set("DMXvalues", dmxValuesIn.toString())
 }
 
 function _initValues() {
