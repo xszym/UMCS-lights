@@ -1,6 +1,15 @@
+const redis = require("redis");
+const client = redis.createClient();
 const {NodeVM} = require('vm2');
 
 // https://www.npmjs.com/package/vm2
+
+client.on("error", function(error) {
+  console.error(error);
+});
+
+client.set("key", "value", redis.print);
+client.get("key", redis.print);
 
 function test() {
     console.log('123')
