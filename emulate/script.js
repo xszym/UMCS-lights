@@ -26,13 +26,11 @@ function _NextFrame(dmxValuesIn) {
             } else{
                 for(var j=0; j < dmxValuesIn[i].length; j++){
                     if(dmxValuesIn[i][j].length != 3){
-                       // throw not 3 colors
                        throw "dmxValuesIn["+i+"]["+j+"].length should be 3"
                     } else {
                         if(!(isInt(dmxValuesIn[i][j][0]) &&
                             isInt(dmxValuesIn[i][j][1]) &&
                             isInt(dmxValuesIn[i][j][2]))){
-                            // trow not number value
                             throw "dmxValuesIn["+i+"]["+j+"][] should be int number"
                         }
                     }
@@ -41,10 +39,6 @@ function _NextFrame(dmxValuesIn) {
         }
     }
 
-//    console.log(typeof dmxValuesIn[0])
-//    console.log(typeof dmxValuesIn)
-    // console.log(dmxValuesIn)
-    // publish DMX values to world and lights
     redisClient.set("DMXvalues", dmxValuesIn.toString())
 }
 
@@ -127,7 +121,6 @@ async function loop() {
     }
     v += 1;
     if (v > 255) v = 0;
-    values = [0, 0, 0]
     NextFrame(values)
     await sleep(1000)
 }
