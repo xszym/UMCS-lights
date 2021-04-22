@@ -12,34 +12,30 @@ function test() {
     console.log('123')
 }
 
-function isInt(n){
-    return (typeof n== 'number' && n%1== 0);
-}
-
 function _NextFrame(dmxValuesIn) {
-    if(dmxValuesIn.length != 5){
-        throw "dmxValuesIn.length should be 5"
-    } else{
-        for(var i=0; i < dmxValuesIn.length; i++){
-            if(dmxValuesIn[i].length != 28){
-                throw "dmxValuesIn["+i+"].length should be 28"
-            } else{
-                for(var j=0; j < dmxValuesIn[i].length; j++){
-                    if(dmxValuesIn[i][j].length != 3){
-                       throw "dmxValuesIn["+i+"]["+j+"].length should be 3"
-                    } else {
-                        if(!(isInt(dmxValuesIn[i][j][0]) &&
-                            isInt(dmxValuesIn[i][j][1]) &&
-                            isInt(dmxValuesIn[i][j][2]))){
-                            throw "dmxValuesIn["+i+"]["+j+"][] should be int number"
-                        }
-                    }
-                }
-            }
-        }
-    }
+    // console.log(dmxValuesIn);
+    // if(dmxValuesIn.length != 5){
+    //     throw "dmxValuesIn.length should be 5"
+    // }
+    // for(var i=0; i < dmxValuesIn.length; i++){
+    //     if(dmxValuesIn[i].length != 28){
+    //         throw "dmxValuesIn["+i+"].length should be 28"
+    //     } 
+    //     for(var j=0; j < dmxValuesIn[i].length; j++){
+    //         if(dmxValuesIn[i][j].length != 3){
+    //             throw "dmxValuesIn["+i+"]["+j+"].length should be 3"
+    //         }
+    //         if(!(isInt(dmxValuesIn[i][j][0]) &&
+    //             isInt(dmxValuesIn[i][j][1]) &&
+    //             isInt(dmxValuesIn[i][j][2]))
+    //         ) {
+    //             throw "dmxValuesIn["+i+"]["+j+"][] should be int number"
+    //         }
+    //     } 
+    // }
 
     redisClient.set("DMXvalues", dmxValuesIn.toString())
+    redisClient.set("DMXvalues_update_timestamp", Date.now().toString())
 }
 
 function _initValues() {
@@ -122,7 +118,7 @@ async function loop() {
     v += 1;
     if (v > 255) v = 0;
     NextFrame(values)
-    await sleep(1000)
+    await sleep(10000)
 }
 ` + ' ' +
 ` 
