@@ -8,14 +8,12 @@ redisClient.on("error", function (error) {
   console.error(error);
 });
 
-/// Handles switching DMX values for the next frame
 function _NextFrame(dmxValuesIn) {
   // TODO - Check if dmxValuesIn is correct
   redisClient.set("DMXvalues", dmxValuesIn.toString());
   redisClient.set("DMXvalues_update_timestamp", Date.now().toString());
 }
 
-/// Handles initializing the array with DMX values
 function _InitValues() {
   let values = [];
   for (let i = 0; i < 5; i++) {
@@ -28,7 +26,6 @@ function _InitValues() {
   return values;
 }
 
-/// Handles errors from inside code emulation
 function _GetError(message) {
   console.error(message);
 }
