@@ -14,7 +14,11 @@ async def send_dmx_values(websocket, path):
 		await websocket.send(dmx_values)
 		await asyncio.sleep(1/30)
 
-start_server = websockets.serve(send_dmx_values, '0.0.0.0', 5678)
+start_server = websockets.serve(
+	send_dmx_values,
+	'0.0.0.0',
+	int(os.environ['WEBSOCKETS_SERVER_PORT'])
+)
 
 asyncio.get_event_loop().run_until_complete(start_server)
 asyncio.get_event_loop().run_forever()
