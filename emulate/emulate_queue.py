@@ -1,8 +1,12 @@
 from subprocess import Popen, PIPE
 from time import sleep, time
 import redis
+import os
 
-redis_db = redis.Redis(host='redis', port=6379)
+redis_db = redis.Redis(
+	host=os.environ['REDIS_HOST'],
+	port=int(os.environ['REDIS_PORT'])
+)
 
 def current_milliseconds():
 	return round(time() * 1000)

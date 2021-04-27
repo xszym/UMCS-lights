@@ -7,6 +7,8 @@ services:
     restart: always
     volumes:
       - ./emulate/:/usr/src/app/
+    env_file:
+      - ./emulate/.env.dev
     depends_on:
       - redis
       - backend
