@@ -1,21 +1,21 @@
-
 from subprocess import Popen, PIPE
 from time import sleep, time
-import datetime
 import redis
-
 
 redis_db = redis.Redis(host='redis', port=6379)
 
-def current_milli_time():
+def current_milliseconds():
 	return round(time() * 1000)
 
 
-WAIT_TIME = 30 # time to wait for code emulation in seconds
-frame_timeout = 5000
-# TODO - Download user code and pass it to process
+WAIT_TIME = 30  # time to wait for code emulation in SECONDS
+FRAME_TIMEOUT = 5000  # time to wait for a single frame before timeout in MILLISECONDS
+
+# TODO - Download user code and pass it to process, as of right now it is hard-coded inside 'emulate.js'
+
 process = Popen(['node', 'emulate.js'], stdout=PIPE)
-redis_db.set("DMXvalues_update_timestamp", current_milli_time())
+redis_db.set("DMXvalues_update_timestamp", current_milliseconds())
+
 
 for i in range(WAIT_TIME):
 	ret = process.poll()
@@ -25,27 +25,30 @@ for i in range(WAIT_TIME):
 		break
 
 	dmx_values = redis_db.get("DMXvalues")
-	print(f'DmxValues {dmx_values}')
+	if dmx_values is None:
+		print('DMXvalues is None', flush=True)
+		sleep(1)
+		continue
+	print(f'DmxValues: {dmx_values}')
 
-	last_update_time = int(redis_db.get("DMXvalues_update_timestamp").decode('utf-8'))
+	last_update_time = redis_db.get("DMXvalues_update_timestamp")
 	if last_update_time is None:
 		print('last_update_time is None', flush=True)
 		sleep(1)
 		continue
-	
-	time_now = current_milli_time()
-	delta = time_now - last_update_time
-	print(f'delta: {delta}')
+	last_update_time = int(last_update_time.decode('utf-8'))
 
-	if  delta > frame_timeout:
-		print('frame timeout', flush=True)
+	time_now = current_milliseconds()
+	delta = time_now - last_update_time
+
+	if delta > FRAME_TIMEOUT:
+		print('Frame timed out', flush=True)
 		break
 
-	print('sleeping one second')
 	sleep(1)
 
-
-print('OUT OF LOOP')
 if process.poll() is None:
-	print('KILLING')
+	print('Process timed out')
 	process.kill()
+else:
+	print('Process finished')
