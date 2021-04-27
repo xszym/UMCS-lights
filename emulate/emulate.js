@@ -51,8 +51,8 @@ vm.on("console.log", (data) => {
   console.log(data);
 });
 
-// TODO - User code should be fetched from queue instead
-const UserCode = `
+// TODO - User code should be taken from stdin
+const USER_CODE = `
 let v = 0;
 
 async function loop() {
@@ -86,7 +86,7 @@ async function _loop() {
     if(_IsWorking() === false) break;
   }
 }
-` + UserCode + `
+` + USER_CODE + `
 _loop()
   .catch(err => {
     if(err !== 'Stop') _GetError(err.message);
