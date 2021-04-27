@@ -12,8 +12,8 @@ def current_milliseconds():
 	return round(time() * 1000)
 
 
-WAIT_TIME = 30  # time to wait for code emulation in SECONDS
-FRAME_TIMEOUT = 5000  # time to wait for a single frame before timeout in MILLISECONDS
+CODE_EMULATION_WAIT_TIME_SECONDS = 30
+FRAME_TIMEOUT_MILLISECONDS = 5000
 
 # TODO - Download user code and pass it to process, as of right now it is hard-coded inside 'emulate.js'
 
@@ -21,7 +21,7 @@ process = Popen(['node', 'emulate.js'], stdout=PIPE)
 redis_db.set("DMXvalues_update_timestamp", current_milliseconds())
 
 
-for i in range(WAIT_TIME):
+for i in range(CODE_EMULATION_WAIT_TIME_SECONDS):
 	ret = process.poll()
 
 	if ret is not None:
@@ -45,7 +45,7 @@ for i in range(WAIT_TIME):
 	time_now = current_milliseconds()
 	delta = time_now - last_update_time
 
-	if delta > FRAME_TIMEOUT:
+	if delta > FRAME_TIMEOUT_MILLISECONDS:
 		print('Frame timed out', flush=True)
 		break
 
