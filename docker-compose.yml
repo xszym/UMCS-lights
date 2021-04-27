@@ -4,23 +4,23 @@ services:
   emulate:
     build: ./emulate
     command: ["python3", "emulate_queue.py"]
-    # restart: always
+    restart: always
     volumes:
       - ./emulate/:/usr/src/app/
     depends_on:
       - redis
-      # - backend
+      - backend
   sender:
     build: ./emulate
     command: ["python", "sender.py"]
     ports:
       - 5678:5678
-    # restart: always
+    restart: always
     volumes:
       - ./emulate/:/usr/src/app/
     depends_on:
       - redis
-      # - backend
+      - backend
   backend:
     build: ./backend
     command: ["./wait-for-it.sh", "database:5432", "--", "python", "manage.py", "runserver", "0.0.0.0:8000"]
