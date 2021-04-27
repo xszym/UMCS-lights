@@ -1,8 +1,12 @@
 import asyncio
 import websockets
 import redis
+import os
 
-redis_db = redis.Redis(host='redis', port=6379)
+redis_db = redis.Redis(
+	host=os.environ['REDIS_HOST'],
+	port=int(os.environ['REDIS_PORT'])
+)
 
 async def send_dmx_values(websocket, path):
 	while True:
