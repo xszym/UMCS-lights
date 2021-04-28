@@ -40,9 +40,13 @@ function getWorking() {
   return working;
 }
 
+function getLog(data) {
+  console.log(data);
+}
+
 const code = emulator.generateEmulatorCode(USER_CODE)
 
-let vm = emulator.initVm(myNextFrame, getError, getWorking);
+let vm = emulator.initVm(myNextFrame, getError, getLog, getWorking);
 
 try {
   vm.run(code, "_vm.js");
