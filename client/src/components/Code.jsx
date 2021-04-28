@@ -205,6 +205,7 @@ const CodeIn = () => {
 
     ipcRenderer.on('error', (event, arg) => {
       message.error(arg);
+      setRunning(false);
     })
 
     ipcRenderer.on('log', (event, arg) => {
@@ -221,7 +222,7 @@ const CodeIn = () => {
               <Title>Emulator</Title>
             </Col>
             <Col>
-              {!running &&
+              {!CodeContext.liveMode && !running &&
               <Button onClick={() => {
                 ipcRenderer.send('code', CodeContext.code);
                 setRunning(true);
@@ -233,6 +234,20 @@ const CodeIn = () => {
                   ipcRenderer.send('stop');
                 }}>Stop</Button>
               }
+
+              {!running && !CodeContext.liveMode &&
+              <Button onClick={() => {
+                CodeContext.setLiveMode(true)}
+              }>
+                Live Mode
+              </Button>
+              }
+              {CodeContext.liveMode &&
+              <Button onClick={() => {
+                CodeContext.setLiveMode(false)
+              }}>Exit live mode</Button>
+              }
+
             </Col>
           </Row>
         </Header>
