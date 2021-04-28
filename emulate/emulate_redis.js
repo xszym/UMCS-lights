@@ -14,7 +14,7 @@ function myNextFrame(dmxValuesIn) {
 }
 
 function getError(message) {
-    console.error(message);
+  console.error(message);
 }
 
 // TODO - User code should be taken from stdin
@@ -34,9 +34,15 @@ async function loop() {
 }
 `;
 
+let working = true;
+
+function getWorking() {
+  return working;
+}
+
 const code = emulator.generateEmulatorCode(USER_CODE)
 
-let vm = emulator.initVm(myNextFrame, getError);
+let vm = emulator.initVm(myNextFrame, getError, getWorking);
 
 try {
   vm.run(code, "_vm.js");

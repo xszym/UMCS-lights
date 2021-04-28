@@ -1,4 +1,4 @@
-const { NodeVM } = require("vm2");
+const {NodeVM} = require("vm2");
 // https://www.npmjs.com/package/vm2
 
 
@@ -30,7 +30,7 @@ _loop()
 }
 
 
-function initVm(_NextFrame, _GetError, _Log) {
+function initVm(_NextFrame, _GetError, _Log, _IsWorking) {
   function _InitValues() {
     let values = [];
     for (let i = 0; i < 5; i++) {
@@ -41,12 +41,6 @@ function initVm(_NextFrame, _GetError, _Log) {
       values.push(row);
     }
     return values;
-  }
-
-  /// Enables us to stop code emulation from the outside
-  let working = true;
-  function _IsWorking() {
-    return working;
   }
 
   let vm = new NodeVM({

@@ -5,7 +5,7 @@ import {Button, Layout, Row, Col, Typography, Modal, Table, Form, Input, Spin, m
 import Emulator from "./Emulator";
 import Editor from "./Editor";
 
-const { ipcRenderer } = window.require("electron");
+const {ipcRenderer} = window.require("electron");
 
 const {Header, Footer, Content} = Layout;
 const {Title} = Typography;
@@ -196,6 +196,21 @@ const ModalFormMain = () => {
 
 const CodeIn = () => {
   const CodeContext = useContext(codeContext);
+  const [running, setRunning] = useState(false);
+
+  useEffect(() => {
+    ipcRenderer.on('stop', (event) => {
+      setRunning(false);
+    })
+
+    ipcRenderer.on('error', (event, arg) => {
+      message.error(arg);
+    })
+
+    ipcRenderer.on('log', (event, arg) => {
+      message.info(arg);
+    })
+  }, []);
 
   return (
     <>
@@ -206,9 +221,18 @@ const CodeIn = () => {
               <Title>Emulator</Title>
             </Col>
             <Col>
+              {!running &&
               <Button onClick={() => {
                 ipcRenderer.send('code', CodeContext.code);
+                setRunning(true);
               }}>Run</Button>
+              }
+              {
+                running &&
+                <Button onClick={() => {
+                  ipcRenderer.send('stop');
+                }}>Stop</Button>
+              }
             </Col>
           </Row>
         </Header>
