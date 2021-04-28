@@ -17,7 +17,7 @@ FRAME_TIMEOUT_MILLISECONDS = 5000
 
 # TODO - Download user code and pass it to process, as of right now it is hard-coded inside 'emulate.js'
 
-process = Popen(['node', 'emulate.js'], stdout=PIPE)
+process = Popen(['node', 'emulate_redis.js'], stdout=PIPE)
 redis_db.set("DMXvalues_update_timestamp", current_milliseconds())
 
 

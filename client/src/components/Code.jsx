@@ -5,6 +5,8 @@ import {Button, Layout, Row, Col, Typography, Modal, Table, Form, Input, Spin, m
 import Emulator from "./Emulator";
 import Editor from "./Editor";
 
+const { ipcRenderer } = window.require("electron");
+
 const {Header, Footer, Content} = Layout;
 const {Title} = Typography;
 const FormItem = Form.Item;
@@ -205,7 +207,7 @@ const CodeIn = () => {
             </Col>
             <Col>
               <Button onClick={() => {
-                CodeContext.setCode(CodeContext.code + '!')
+                ipcRenderer.send('code', CodeContext.code);
               }}>Run</Button>
             </Col>
           </Row>
