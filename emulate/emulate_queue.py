@@ -4,7 +4,7 @@ import redis
 import logging
 from time import sleep, time
 from subprocess import run as subprocess_run
-from django.conf import settings
+import django
 
 
 logging.basicConfig(encoding='utf-8', level=logging.DEBUG)
@@ -14,18 +14,12 @@ redis_db = redis.Redis(
 	port=int(os.environ['REDIS_PORT'])
 )
 
-settings.configure(
-    DATABASE_ENGINE = 'django.db.backends.postgresql',
-    DATABASE_NAME = os.environ.get('POSTGRES_DB', 'postgres'),
-    DATABASE_USER = os.environ.get('POSTGRES_USER', 'postgres'),
-    DATABASE_PASSWORD =  os.environ.get('POSTGRES_PASSWORD', 'postgres'),
-    DATABASE_HOST = 'database',
-    DATABASE_PORT = '5432',
-    TIME_ZONE = 'UTC',
-)
+sys.path.insert(0, os.path.abspath('../backend'))
 
-sys.path.insert(0, os.path.abspath('../'))
-from backend.codes.models import Code
+os.environ['DJANGO_SETTINGS_MODULE'] = 'lights.settings'
+django.setup()
+
+from codes.models import Code
 
 
 def current_milliseconds():
@@ -104,7 +98,7 @@ def run_code(code: str, duration_of_emulation_in_seconds: int) -> None:
 
 
 def retrieve_next_code() -> str:
-	
+
 	# https://stackoverflow.com/questions/4383571/importing-files-from-different-folder
 	# https://stackoverflow.com/questions/2180415/using-django-database-layer-outside-of-django
 
@@ -114,6 +108,9 @@ def retrieve_next_code() -> str:
 def main():
 	while True:
 		logging.info(f'Running code for {CODE_EMULATION_WAIT_TIME_SECONDS} seconds')
+
+		c = Code.objects.first()
+		print(c)
 
 		code = """
 		let v = 0;
@@ -130,7 +127,7 @@ def main():
 			await sleep(1000)
 		}
 		"""
-		
+
 		run_code(code, CODE_EMULATION_WAIT_TIME_SECONDS)
 
 

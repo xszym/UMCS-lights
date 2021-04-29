@@ -1,9 +1,16 @@
 FROM nikolaik/python-nodejs
 
 WORKDIR /usr/src/app/
-COPY . .
 
-WORKDIR /usr/src/app/emulate/
+COPY ./emulate/package.json .
+RUN npm i
 
-RUN npm i 
+COPY ./backend/requirements.txt .
 RUN pip install -r requirements.txt
+
+COPY ./emulate/requirements.txt .
+RUN pip install -r requirements.txt
+
+
+COPY . .
+WORKDIR /usr/src/app/emulate/
