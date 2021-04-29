@@ -4,7 +4,7 @@ import axios from 'axios'
 import CodeContext from './CodeContext'
 import CodeReducer from './CodeReducer'
 
-import {GET_CODES, SET_CODE} from "../types"
+import {GET_CODES, SET_CODE, SET_LIVE_MODE} from "../types"
 
 const CodeState = (props) => {
   let initialState = {
@@ -15,6 +15,7 @@ const CodeState = (props) => {
       '\tNextFrame();\n' +
       '}',
     codes: [],
+    liveMode: false,
   }
 
   const [state, dispatch] = useReducer(CodeReducer, initialState)
@@ -51,15 +52,21 @@ const CodeState = (props) => {
     }
   }
 
+  const setLiveMode = (data) => {
+    dispatch({type: SET_LIVE_MODE, payload: data})
+  }
+
   return (
     <CodeContext.Provider
       displayName='CodeContext'
       value={{
         code: state.code,
         codes: state.codes,
+        liveMode: state.liveMode,
         setCode,
         getCodes,
         submitCode,
+        setLiveMode,
       }}
     >
       {props.children}

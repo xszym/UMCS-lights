@@ -5,6 +5,8 @@ import {Button, Layout, Row, Col, Typography, Modal, Table, Form, Input, Spin, m
 import Emulator from "./Emulator";
 import Editor from "./Editor";
 
+const {ipcRenderer} = window.require("electron");
+
 const {Header, Footer, Content} = Layout;
 const {Title} = Typography;
 const FormItem = Form.Item;
@@ -194,6 +196,22 @@ const ModalFormMain = () => {
 
 const CodeIn = () => {
   const CodeContext = useContext(codeContext);
+  const [running, setRunning] = useState(false);
+
+  useEffect(() => {
+    ipcRenderer.on('stop', (event) => {
+      setRunning(false);
+    })
+
+    ipcRenderer.on('error', (event, arg) => {
+      message.error(arg);
+      setRunning(false);
+    })
+
+    ipcRenderer.on('log', (event, arg) => {
+      message.info(arg);
+    })
+  }, []);
 
   return (
     <>
@@ -204,9 +222,32 @@ const CodeIn = () => {
               <Title>Emulator</Title>
             </Col>
             <Col>
+              {!CodeContext.liveMode && !running &&
               <Button onClick={() => {
-                CodeContext.setCode(CodeContext.code + '!')
+                ipcRenderer.send('code', CodeContext.code);
+                setRunning(true);
               }}>Run</Button>
+              }
+              {
+                running &&
+                <Button onClick={() => {
+                  ipcRenderer.send('stop');
+                }}>Stop</Button>
+              }
+
+              {!running && !CodeContext.liveMode &&
+              <Button onClick={() => {
+                CodeContext.setLiveMode(true)}
+              }>
+                Live Mode
+              </Button>
+              }
+              {CodeContext.liveMode &&
+              <Button onClick={() => {
+                CodeContext.setLiveMode(false)
+              }}>Exit live mode</Button>
+              }
+
             </Col>
           </Row>
         </Header>

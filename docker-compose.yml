@@ -42,13 +42,13 @@ services:
     command: celery -A lights worker -l INFO
     volumes:
       - ./backend/:/user/src/app/
+    env_file:
+      - ./backend/.env.dev
     depends_on:
       - redis
       - database
   database:
     image: postgres:9.6.21-alpine
-    volumes:
-      - ./database/:/var/lib/postgresql/data/
     env_file:
       - ./backend/.env.dev
   redis:
