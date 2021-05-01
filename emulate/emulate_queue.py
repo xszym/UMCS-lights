@@ -5,6 +5,7 @@ import logging
 from time import sleep, time
 from subprocess import run as subprocess_run
 import django
+import random
 
 
 logging.basicConfig(encoding='utf-8', level=logging.DEBUG)
@@ -15,6 +16,9 @@ redis_db = redis.Redis(
 )
 
 sys.path.insert(0, os.path.abspath('../backend'))
+
+# https://stackoverflow.com/questions/4383571/importing-files-from-different-folder
+# https://stackoverflow.com/questions/2180415/using-django-database-layer-outside-of-django
 
 os.environ['DJANGO_SETTINGS_MODULE'] = 'lights.settings'
 django.setup()
@@ -46,6 +50,8 @@ def check_process(process) -> None:
 
 
 def check_redis_dmx() -> None:
+	logging.info('Checking redis dmx...')
+
 	dmx_values = redis_db.get('DMXvalues')
 	if dmx_values is None:
 		return
@@ -71,6 +77,7 @@ def start_process(code: str):
 
 def wait_for_emulation(process, duration_of_emulation_in_seconds) -> None:
 	for i in range(duration_of_emulation_in_seconds):
+		logging.info(f'{i}: Checking process ...')
 		try:
 			check_process(process)
 			check_redis_dmx()
@@ -81,6 +88,7 @@ def wait_for_emulation(process, duration_of_emulation_in_seconds) -> None:
 			logging.warning('UserCodeException')
 			break
 
+		logging.info('Sleeping 1s ..')
 		sleep(1)
 
 
@@ -97,38 +105,20 @@ def run_code(code: str, duration_of_emulation_in_seconds: int) -> None:
 		logging.info(f'Process finished with return code {return_process_poll}')
 
 
-def retrieve_next_code() -> str:
-
-	# https://stackoverflow.com/questions/4383571/importing-files-from-different-folder
-	# https://stackoverflow.com/questions/2180415/using-django-database-layer-outside-of-django
-
-	pass
+def retrieve_next_animation() -> Code:
+	pk_list = Code.objects.filter(approved=True).values_list('pk', flat=True)
+	random_pk = random.choice(pk_list)
+	return Code.objects.get(pk=random_pk)
 
 
 def main():
 	while True:
 		logging.info(f'Running code for {CODE_EMULATION_WAIT_TIME_SECONDS} seconds')
 
-		c = Code.objects.first()
-		print(c)
+		animation = retrieve_next_animation()
+		logging.info(f'Animation name: {animation.name}')
 
-		code = """
-		let v = 0;
-
-		async function loop() {
-			for (let i = 0; i < 5; i++) {
-				for (let j = 0; j < 28; j++) {
-					values[i][j] = [v, v, v]
-				}
-			}
-			v += 1;
-			if (v > 255) v = 0;
-			NextFrame(values)
-			await sleep(1000)
-		}
-		"""
-
-		run_code(code, CODE_EMULATION_WAIT_TIME_SECONDS)
+		run_code(animation.code, CODE_EMULATION_WAIT_TIME_SECONDS)
 
 
 if __name__ == '__main__':
