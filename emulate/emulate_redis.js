@@ -19,8 +19,6 @@ function getError(message) {
   console.error(message);
 }
 
-const userCode = fs.readFileSync(process.stdin.fd, 'utf-8').toString();
-
 let working = true;
 
 function getWorking() {
@@ -31,12 +29,20 @@ function getLog(data) {
   console.log(data);
 }
 
-const code = emulator.generateEmulatorCode(userCode)
+fs.readFile('tmp', 'utf8', function(err, data) {
+    if (err) throw err;
+    run(data)
+});
 
-let vm = emulator.initVm(myNextFrame, getError, getLog, getWorking);
+function run(userCode) {
+  const code = emulator.generateEmulatorCode(userCode);
 
-try {
-  vm.run(code, "_vm.js");
-} catch (error) {
-  console.error(error.message);
+  let vm = emulator.initVm(myNextFrame, getError, getLog, getWorking);
+
+  try {
+    vm.run(code, "_vm.js");
+  } catch (error) {
+    console.error(error.message);
+  }
 }
+

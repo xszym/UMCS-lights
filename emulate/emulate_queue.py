@@ -2,10 +2,10 @@ import os
 import sys
 import redis
 import logging
-from time import sleep, time
-from subprocess import run as subprocess_run
 import django
 import random
+import subprocess
+from time import sleep, time
 
 
 logging.basicConfig(encoding='utf-8', level=logging.DEBUG)
@@ -69,8 +69,14 @@ def check_redis_dmx() -> None:
 		raise FrameTimeoutException
 
 
+def save_to_tmp_file(code: str) -> None:
+	with open('tmp', 'wb') as file:
+		file.write(code.encode('utf-8'))
+
+
 def start_process(code: str):
-	process = subprocess_run(['node', 'emulate_redis.js'], input=code, encoding='utf-8')
+	save_to_tmp_file(code)
+	process = subprocess.Popen(['node', 'emulate_redis.js'])
 	redis_db.set('DMXvalues_update_timestamp', current_milliseconds())
 	return process
 
