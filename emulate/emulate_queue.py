@@ -42,6 +42,10 @@ class UserCodeException(BaseException):
 	"""Exception when start user code"""
 
 
+class NoCodeInDatabaseException(BaseException):
+	"""Exception when there is no code in databae"""
+
+
 def check_process(process) -> None:
 	ret = process.poll()
 
@@ -113,6 +117,8 @@ def run_code(code: str, duration_of_emulation_in_seconds: int) -> None:
 
 def retrieve_next_animation() -> Code:
 	pk_list = Code.objects.filter(approved=True).values_list('pk', flat=True)
+	if len(pk_list) == 0:
+		raise NoCodeInDatabaseException
 	random_pk = random.choice(pk_list)
 	return Code.objects.get(pk=random_pk)
 
@@ -120,11 +126,15 @@ def retrieve_next_animation() -> Code:
 def main():
 	while True:
 		logging.info(f'Running code for {CODE_EMULATION_WAIT_TIME_SECONDS} seconds')
+		
+		try:
+			animation = retrieve_next_animation()
+			logging.info(f'Animation name: {animation.name}')
 
-		animation = retrieve_next_animation()
-		logging.info(f'Animation name: {animation.name}')
-
-		run_code(animation.code, CODE_EMULATION_WAIT_TIME_SECONDS)
+			run_code(animation.code, CODE_EMULATION_WAIT_TIME_SECONDS)
+		except NoCodeInDatabaseException:
+			logging.warning('No Code In Database')
+			sleep(1)
 
 
 if __name__ == '__main__':
