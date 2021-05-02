@@ -17,9 +17,6 @@ redis_db = redis.Redis(
 
 sys.path.insert(0, os.path.abspath('../backend'))
 
-# https://stackoverflow.com/questions/4383571/importing-files-from-different-folder
-# https://stackoverflow.com/questions/2180415/using-django-database-layer-outside-of-django
-
 os.environ['DJANGO_SETTINGS_MODULE'] = 'lights.settings'
 django.setup()
 
@@ -126,7 +123,7 @@ def retrieve_next_animation() -> Code:
 def main():
 	while True:
 		logging.info(f'Running code for {CODE_EMULATION_WAIT_TIME_SECONDS} seconds')
-		
+
 		try:
 			animation = retrieve_next_animation()
 			logging.info(f'Animation name: {animation.name}')
