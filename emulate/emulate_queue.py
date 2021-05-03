@@ -8,7 +8,7 @@ import subprocess
 from time import sleep, time
 
 
-logging.basicConfig(encoding='utf-8', level=logging.DEBUG)
+logging.basicConfig(encoding='utf-8', level=logging.WARNING)
 
 redis_db = redis.Redis(
 	host=os.environ['REDIS_HOST'],
