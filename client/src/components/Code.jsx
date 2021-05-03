@@ -11,13 +11,16 @@ const {Header, Footer, Content} = Layout;
 const {Title} = Typography;
 const FormItem = Form.Item;
 const TabPane = Tabs.TabPane
+const { TextArea } = Input;
 
 const Code = () => {
   return (
     <>
       <CodeIn/>
-      <ModalCodesMain/>
-      <ModalFormMain/>
+      <div style={{'marginTop': 20, 'marginBottom': 20}}>
+        <ModalCodesMain/>
+        <ModalFormMain/>
+      </div>
     </>
   )
 }
@@ -100,7 +103,7 @@ const ModalCodesMain = () => {
 
   return (
     <>
-      <Button onClick={() => {
+      <Button style={{'marginLeft': 30}} onClick={() => {
         setModalCodesShow(true)
       }}>Codes</Button>
 
@@ -132,7 +135,7 @@ const ModalFormMain = () => {
       <Modal
         title="Submit"
         style={{}}
-        width={1000}
+        width={500}
         visible={modalFormShow}
         onOk={(f) => {
           form.current.submit()
@@ -176,7 +179,7 @@ const ModalFormMain = () => {
               label="Description"
               name="description"
             >
-              <Input/>
+              <TextArea/>
             </FormItem>
           </Form>
         </Spin>
@@ -186,7 +189,7 @@ const ModalFormMain = () => {
 
   return (
     <>
-      <Button onClick={() => {
+      <Button style={{'marginLeft': 15}} onClick={() => {
         setModalFormShow(true)
       }}>Submit</Button>
       <ModalForm/>
@@ -215,13 +218,13 @@ const CodeIn = () => {
 
   return (
     <>
-      <Layout>
+      <Layout style={{'marginTop': 20, 'marginLeft': 30}}>
         <Header style={{'backgroundColor': '#fff'}}>
-          <Row>
+          <Row style={{'marginLeft': 50}}>
             <Col>
               <Title>Emulator</Title>
             </Col>
-            <Col>
+            <Col style={{'marginLeft': 50}}>
               {!CodeContext.liveMode && !running &&
               <Button onClick={() => {
                 ipcRenderer.send('code', CodeContext.code);
@@ -236,14 +239,14 @@ const CodeIn = () => {
               }
 
               {!running && !CodeContext.liveMode &&
-              <Button onClick={() => {
+              <Button style={{'marginLeft': 15}} onClick={() => {
                 CodeContext.setLiveMode(true)}
               }>
                 Live Mode
               </Button>
               }
               {CodeContext.liveMode &&
-              <Button onClick={() => {
+              <Button style={{'marginLeft': 15}} onClick={() => {
                 CodeContext.setLiveMode(false)
               }}>Exit live mode</Button>
               }
@@ -251,7 +254,7 @@ const CodeIn = () => {
             </Col>
           </Row>
         </Header>
-        <Content>
+        <Content style={{'backgroundColor': 'white'}}>
           <Row>
             <Col xs={24} xl={12}>
               <Emulator/>

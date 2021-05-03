@@ -1,3 +1,5 @@
+const fs = require("fs");
+
 const emulator = require('./emulate');
 
 const redis = require("redis");
@@ -17,23 +19,6 @@ function getError(message) {
   console.error(message);
 }
 
-// TODO - User code should be taken from stdin
-const USER_CODE = `
-let v = 0;
-
-async function loop() {
-    for (let i = 0; i < 5; i++) {
-        for (let j = 0; j < 28; j++) {
-            values[i][j] = [v, v, v]
-        }
-    }
-    v += 1;
-    if (v > 255) v = 0;
-    NextFrame(values)
-    await sleep(1000)
-}
-`;
-
 let working = true;
 
 function getWorking() {
@@ -44,12 +29,20 @@ function getLog(data) {
   console.log(data);
 }
 
-const code = emulator.generateEmulatorCode(USER_CODE)
+fs.readFile('tmp', 'utf8', function(err, data) {
+    if (err) throw err;
+    run(data)
+});
 
-let vm = emulator.initVm(myNextFrame, getError, getLog, getWorking);
+function run(userCode) {
+  const code = emulator.generateEmulatorCode(userCode);
 
-try {
-  vm.run(code, "_vm.js");
-} catch (error) {
-  console.error(error.message);
+  let vm = emulator.initVm(myNextFrame, getError, getLog, getWorking);
+
+  try {
+    vm.run(code, "_vm.js");
+  } catch (error) {
+    console.error(error.message);
+  }
 }
+
