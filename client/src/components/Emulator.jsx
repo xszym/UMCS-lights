@@ -51,10 +51,10 @@ const Emulator = () => {
           values[i][j][1] = tmp[k + 1];
           values[i][j][2] = tmp[k + 2];
 
-          i++;
-          if (i === 5) {
-            j++;
-            i = 0;
+          j++;
+          if (j === 28) {
+            i++;
+            j = 0;
           }
         }
 
