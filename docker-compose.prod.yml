@@ -28,8 +28,6 @@ services:
   backend:
     build: ./backend
     command: ["./wait-for-it.sh", "database:5432", "--", "gunicorn", "lights.wsgi:application",  "--bind", "0.0.0.0:8000"]
-    volumes:
-      - ./backend/:/usr/src/app/
     ports:
       - 58894:8000
     env_file:
@@ -47,8 +45,6 @@ services:
       - database
   database:
     image: postgres:9.6.21-alpine
-    volumes:
-      - ./database/:/var/lib/postgresql/data/
     env_file:
       - ./backend/.env.dev
   redis:
