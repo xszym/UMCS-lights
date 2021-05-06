@@ -24,7 +24,7 @@ const Emulator = () => {
   useEffect(() => {
     if (CodeContext.liveMode) {
       // TODO - to env
-      const client = new W3CWebSocket('ws://127.0.0.1:5678');
+      const client = new W3CWebSocket('ws://159.89.9.110:5678');
 
       client.onerror = () => {
         message.error('Error connecting to server');
