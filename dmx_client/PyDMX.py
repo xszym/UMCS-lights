@@ -33,7 +33,7 @@ class PyDMX:
         self.ser.write(bytearray(self.data))
 
         # Sleep
-        time.sleep(self.sleepms / 1000.0)  # between 0 - 1 sec
+        # time.sleep(self.sleepms / 1000.0)  # between 0 - 1 sec
 
     def sendzero(self):
         self.data = np.zeros([513], dtype='uint8')
