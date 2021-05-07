@@ -4,11 +4,9 @@ const BrowserWindow = electron.BrowserWindow;
 const isDev = require('electron-is-dev');
 const electronLocalshortcut = require('electron-localshortcut');
 
-const emulator = require('../emulate/emulate');
-
 const path = require('path');
 const {ipcMain} = require('electron');
-
+const emulator = isDev ? require('../emulate/emulate') : require(`${path.join(__dirname, 'emulate.js')}`)
 
 let mainWindow = null;
 
@@ -20,10 +18,8 @@ function createWindow() {
     minWidth: 600,
     title: 'UMCS Led Emulator'
   });
-  mainWindow.loadURL(isDev ? 'http://localhost:3000' : `file://${path.join(__dirname, './build/index.html')}`);
+  mainWindow.loadURL(isDev ? 'http://localhost:3000' : `file://${path.join(__dirname, 'index.html')}`);
   if (isDev) {
-    // Open the DevTools.
-    //BrowserWindow.addDevToolsExtension('<location to your react chrome extension>');
     mainWindow.webContents.openDevTools();
   }
   mainWindow.on('closed', () => mainWindow = null);
