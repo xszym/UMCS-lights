@@ -6,7 +6,7 @@ import django
 import random
 import subprocess
 from time import sleep, time
-
+from datetime import datetime
 
 logging.basicConfig(encoding='utf-8', level=logging.WARNING)
 
@@ -21,6 +21,7 @@ os.environ['DJANGO_SETTINGS_MODULE'] = 'lights.settings'
 django.setup()
 
 from codes.models import Code
+from codes.models import Config
 
 
 def current_milliseconds():
@@ -119,10 +120,34 @@ def retrieve_next_animation() -> Code:
 	random_pk = random.choice(pk_list)
 	return Code.objects.get(pk=random_pk)
 
+def is_time_between(begin_time, end_time, check_time=None):
+	# If check time is not given, default to current time
+	check_time = check_time or datetime.now().time()
+	if begin_time < end_time:
+		return check_time >= begin_time and check_time <= end_time
+	else: # crosses midnight
+		return check_time >= begin_time or check_time <= end_time
+
+def should_animate() -> bool:
+	""" returns if an animation should be shown based on db config """
+	cfg = Config.objects.first()
+	if cfg is None:
+		return True
+	if cfg.force_stop is True:
+		return False
+	if cfg.force_run is True:
+		return True
+	if cfg.animation_start_time is None or cfg.animation_end_time is None:
+		return True
+	return is_time_between(cfg.animation_start_time, cfg.animation_end_time)
+
 
 def main():
 	while True:
 		logging.info(f'Running code for {CODE_EMULATION_WAIT_TIME_SECONDS} seconds')
+		if not should_animate():
+			sleep(2)
+			continue
 
 		try:
 			animation = retrieve_next_animation()
