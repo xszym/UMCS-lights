@@ -32,9 +32,6 @@ class PyDMX:
         # Send Data
         self.ser.write(bytearray(self.data))
 
-        # Sleep
-        # time.sleep(self.sleepms / 1000.0)  # between 0 - 1 sec
-
     def sendzero(self):
         self.data = np.zeros([513], dtype='uint8')
         self.send()
@@ -43,13 +40,3 @@ class PyDMX:
         print('Close serial server!')
         self.sendzero()
         self.ser.close()
-
-
-if __name__ == '__main__':
-    dmx = PyDMX('COM11')
-
-    for i in range(0, 10):
-        dmx.set_random_data()
-        dmx.send()
-
-    del dmx
