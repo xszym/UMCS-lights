@@ -152,9 +152,11 @@ def main():
 		logging.info(f'Running code for {CODE_EMULATION_WAIT_TIME_SECONDS} seconds')
 		if not should_animate():
 			reset_dmx_values()
+			redis_db.set('stop_sender', str(True))
 			sleep(2)
 			continue
 
+		redis_db.set('stop_sender', str(False))
 		try:
 			animation = retrieve_next_animation()
 			logging.info(f'Animation name: {animation.name}')

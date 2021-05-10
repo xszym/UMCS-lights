@@ -12,7 +12,11 @@ async def send_dmx_values(websocket, path):
 	while True:
 		dmx_values = redis_db.get('DMXvalues').decode('utf-8')
 		await websocket.send(dmx_values)
-		await asyncio.sleep(46.0/1000.0)
+		delay = 46.0/1000.0
+		stop_sender = redis_db.get('stop_sender')
+		if stop_sender is None or stop_sender.decode('utf-8') == str(True):
+			delay = 2.0
+		await asyncio.sleep(delay)
 
 start_server = websockets.serve(
 	send_dmx_values,
