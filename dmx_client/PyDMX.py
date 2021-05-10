@@ -10,7 +10,7 @@ class PyDMX:
         self.ser = serial.Serial(COM, baudrate=Brate, bytesize=Bsize, stopbits=StopB)
         self.data = np.zeros([513], dtype='uint8')
         self.data[0] = 0  # StartCode
-        self.sleepms = 50.0
+        self.sleepms = 44.0
         self.breakus = 176.0
         self.MABus = 16.0
 

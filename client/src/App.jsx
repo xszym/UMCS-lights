@@ -7,7 +7,7 @@ import CodeState from './context/Code/CodeState';
 
 import axios from 'axios';
 
-axios.defaults.baseURL = 'http://localhost:8000';
+axios.defaults.baseURL = 'http://159.89.9.110:58894';
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 
 function App() {
