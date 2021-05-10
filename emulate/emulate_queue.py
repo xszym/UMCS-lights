@@ -121,7 +121,6 @@ def retrieve_next_animation() -> Code:
 	return Code.objects.get(pk=random_pk)
 
 def is_time_between(begin_time, end_time, check_time=None):
-	# If check time is not given, default to current time
 	check_time = check_time or datetime.now().time()
 	if begin_time < end_time:
 		return check_time >= begin_time and check_time <= end_time
@@ -129,7 +128,6 @@ def is_time_between(begin_time, end_time, check_time=None):
 		return check_time >= begin_time or check_time <= end_time
 
 def should_animate() -> bool:
-	""" returns if an animation should be shown based on db config """
 	cfg = Config.objects.first()
 	if cfg is None:
 		return True
