@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from solo.models import SingletonModel
 
 
 class CustomUser(AbstractUser):
@@ -24,3 +25,10 @@ class Code(models.Model):
 
     def __str__(self):
         return f'Code {self.id} {self.name}'
+
+class Config(SingletonModel):
+    force_stop = models.BooleanField(default=False)
+    force_run = models.BooleanField(default=False)
+    animation_start_time = models.TimeField(blank=True, null=True)
+    animation_end_time = models.TimeField(blank=True, null=True)
+    last_raspberry_pi_update = models.DateTimeField(blank=True, null=True)
