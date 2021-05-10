@@ -120,7 +120,7 @@ def retrieve_next_animation() -> Code:
 	random_pk = random.choice(pk_list)
 	return Code.objects.get(pk=random_pk)
 
-def is_time_between(begin_time, end_time, check_time=None):
+def is_time_between(begin_time, end_time, check_time=None) -> bool:
 	check_time = check_time or datetime.now().time()
 	if begin_time < end_time:
 		return check_time >= begin_time and check_time <= end_time
