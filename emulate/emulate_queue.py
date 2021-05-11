@@ -41,7 +41,7 @@ class UserCodeException(BaseException):
 
 
 class NoCodeInDatabaseException(BaseException):
-	"""Exception when there is no code in databae"""
+	"""Exception when there is no code in database"""
 
 
 def check_process(process) -> None:
@@ -120,12 +120,14 @@ def retrieve_next_animation() -> Code:
 	random_pk = random.choice(pk_list)
 	return Code.objects.get(pk=random_pk)
 
+
 def is_time_between(begin_time, end_time, check_time=None) -> bool:
 	check_time = check_time or datetime.now().time()
 	if begin_time < end_time:
-		return check_time >= begin_time and check_time <= end_time
+		return begin_time <= check_time <= end_time
 	else: # crosses midnight
 		return check_time >= begin_time or check_time <= end_time
+
 
 def should_animate() -> bool:
 	cfg = Config.objects.first()
@@ -139,13 +141,12 @@ def should_animate() -> bool:
 		return True
 	return is_time_between(cfg.animation_start_time, cfg.animation_end_time)
 
+
 def reset_dmx_values():
-	dmx_values_zeros = list()
-	for i in range(5):
-		dmx_values_zeros.append(list())
-		for j in range(28):
-			dmx_values_zeros[i].append([0, 0, 0])
-	redis_db.set('DMXvalues', str(dmx_values_zeros))
+	number_of_values = 5 * 28 * 3  # 5 rows, 28 columns, 3 color values
+	serialized = ",".join("0" * number_of_values)
+	redis_db.set('DMXvalues', serialized)
+
 
 def main():
 	while True:
