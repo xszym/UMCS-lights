@@ -24,7 +24,7 @@ async def handler():
 			message = await websocket.recv()
 
 			dmx_values = message.split(',')
-			number_without_windows = 3*12 
+			number_dmx_channels_without_windows = 3*12
 			dmx_values = dmx_values[number_dmx_channels_without_windows:]
 			dmx_values = dmx_values[::-1]
 
