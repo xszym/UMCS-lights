@@ -140,12 +140,9 @@ def should_animate() -> bool:
 	return is_time_between(cfg.animation_start_time, cfg.animation_end_time)
 
 def reset_dmx_values():
-	dmx_values_zeros = list()
-	for i in range(5):
-		dmx_values_zeros.append(list())
-		for j in range(28):
-			dmx_values_zeros[i].append([0, 0, 0])
-	redis_db.set('DMXvalues', str(dmx_values_zeros))
+	number_of_values = 5 * 28 * 3 # 5 rows, 28 columns, 3 color values
+	serialized = ",".join("0" * number_of_values)
+	redis_db.set('DMXvalues', serialized)
 
 def main():
 	while True:
