@@ -6,7 +6,7 @@ import django
 import random
 import subprocess
 from time import sleep, time
-from datetime import datetime
+from django.utils import timezone
 
 logging.basicConfig(encoding='utf-8', level=logging.WARNING)
 
@@ -84,7 +84,7 @@ def start_process(code: str):
 
 
 def is_time_between(begin_time, end_time, check_time=None) -> bool:
-	check_time = check_time or datetime.now().time()
+	check_time = check_time or timezone.now().time()
 	if begin_time < end_time:
 		return begin_time <= check_time <= end_time
 	else: # crosses midnight

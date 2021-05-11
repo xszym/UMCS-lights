@@ -19,6 +19,8 @@ DEBUG = int(os.environ.get('DEBUG', default=1))
 ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS',
                                default='0.0.0.0 localhost').split(' ')
 
+TIME_ZONE = 'Europe/Warsaw'
+
 # Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
