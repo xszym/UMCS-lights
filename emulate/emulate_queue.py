@@ -83,6 +83,27 @@ def start_process(code: str):
 	return process
 
 
+def is_time_between(begin_time, end_time, check_time=None) -> bool:
+	check_time = check_time or datetime.now().time()
+	if begin_time < end_time:
+		return begin_time <= check_time <= end_time
+	else: # crosses midnight
+		return check_time >= begin_time or check_time <= end_time
+
+
+def should_animate() -> bool:
+	cfg = Config.objects.first()
+	if cfg is None:
+		return True
+	if cfg.force_stop is True:
+		return False
+	if cfg.force_run is True:
+		return True
+	if cfg.animation_start_time is None or cfg.animation_end_time is None:
+		return True
+	return is_time_between(cfg.animation_start_time, cfg.animation_end_time)
+
+
 def wait_for_emulation(process, duration_of_emulation_in_seconds) -> None:
 	for i in range(duration_of_emulation_in_seconds):
 		logging.info(f'{i}: Checking process ...')
@@ -96,6 +117,9 @@ def wait_for_emulation(process, duration_of_emulation_in_seconds) -> None:
 			logging.warning('UserCodeException')
 			break
 
+		if not should_animate():
+			logging.info('Finishing animation early ..')
+			return
 		logging.info('Sleeping 1s ..')
 		sleep(1)
 
@@ -119,27 +143,6 @@ def retrieve_next_animation() -> Code:
 		raise NoCodeInDatabaseException
 	random_pk = random.choice(pk_list)
 	return Code.objects.get(pk=random_pk)
-
-
-def is_time_between(begin_time, end_time, check_time=None) -> bool:
-	check_time = check_time or datetime.now().time()
-	if begin_time < end_time:
-		return begin_time <= check_time <= end_time
-	else: # crosses midnight
-		return check_time >= begin_time or check_time <= end_time
-
-
-def should_animate() -> bool:
-	cfg = Config.objects.first()
-	if cfg is None:
-		return True
-	if cfg.force_stop is True:
-		return False
-	if cfg.force_run is True:
-		return True
-	if cfg.animation_start_time is None or cfg.animation_end_time is None:
-		return True
-	return is_time_between(cfg.animation_start_time, cfg.animation_end_time)
 
 
 def reset_dmx_values():
