@@ -139,8 +139,7 @@ def run_code(code: str, duration_of_emulation_in_seconds: int) -> None:
 
 
 def retrieve_animation_from_priority_queue() -> Code:
-	priority_queue = PriorityQueue.objects.order_by('priority').last()
-	if priority_queue:
+	if (priority_queue := PriorityQueue.objects.order_by('-priority').first()):
 		priority_code = priority_queue.code
 		priority_queue.delete()
 		return priority_code
