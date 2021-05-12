@@ -4,8 +4,6 @@ const {NodeVM} = require("vm2");
 
 function generateEmulatorCode(userCode) {
   return `
-var request = require('request');
-
 let values = _InitValues();
 function NextFrame() {
   if(_IsWorking() === false)
@@ -55,7 +53,7 @@ function initVm(_NextFrame, _GetError, _Log, _IsWorking) {
     },
     console: "redirect",
     require: {
-      external: true
+      external: ['request'],
     }
   });
 
