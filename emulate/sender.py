@@ -17,7 +17,7 @@ def current_milliseconds():
 	return round(time() * 1000)
 
 
-def check_fadein_fadeout(dmx_values):
+def get_fade_multiplier():
 	now_time = current_milliseconds()
 	code_start_time = int(redis_db.get('Code_start_time'))
 	code_end_time = int(redis_db.get('Code_end_time'))
@@ -25,11 +25,15 @@ def check_fadein_fadeout(dmx_values):
 	multiplier = 1.0
 	delta_from_start = now_time - code_start_time
 	delta_to_end = code_end_time - now_time
-	if delta_from_start < FADE_IN_TIME_MILLISECONDS: # fade in
+	if delta_from_start < FADE_IN_TIME_MILLISECONDS:
 		multiplier = delta_from_start / FADE_IN_TIME_MILLISECONDS
-	elif delta_to_end < FADE_OUT_TIME_MILLISECONDS: # fade out
+	elif delta_to_end < FADE_OUT_TIME_MILLISECONDS:
 		multiplier = delta_to_end / FADE_OUT_TIME_MILLISECONDS
+	return multiplier
 
+
+def update_dmx_values_fade(dmx_values):
+	multiplier = get_fade_multiplier()
 	dmx_values = [min(255, max(0, int(int(x) * (multiplier)))) for x in dmx_values.split(",")]
 	dmx_values = ",".join([str(e) for e in dmx_values])
 	return dmx_values
@@ -41,8 +45,7 @@ async def send_dmx_values(websocket, path):
 		if dmx_values is None:
 			continue
 
-		dmx_values = check_fadein_fadeout(dmx_values)
-
+		dmx_values = update_dmx_values_fade(dmx_values)
 		await websocket.send(dmx_values)
 
 		delay = 100.0/1000.0
