@@ -33,6 +33,7 @@ def check_fadein_fadeout(dmx_values):
 	dmx_values = [min(255, max(0, int(int(x) * (multiplier)))) for x in dmx_values.split(",")]
 	dmx_values = ",".join([str(e) for e in dmx_values])
 	return dmx_values
+	
 
 async def send_dmx_values(websocket, path):
 	while True:
