@@ -28,7 +28,6 @@ def current_milliseconds():
 	return round(time() * 1000)
 
 
-CODE_EMULATION_WAIT_TIME_SECONDS = 30
 FRAME_TIMEOUT_MILLISECONDS = 5000
 
 
@@ -153,7 +152,6 @@ def reset_dmx_values():
 
 def main():
 	while True:
-		logging.info(f'Running code for {CODE_EMULATION_WAIT_TIME_SECONDS} seconds')
 		if not should_animate():
 			reset_dmx_values()
 			redis_db.set('stop_sender', str(True))
@@ -163,9 +161,10 @@ def main():
 		redis_db.set('stop_sender', str(False))
 		try:
 			animation = retrieve_next_animation()
+			logging.info(f'Running code for {animation.duration_of_emulation_in_seconds} seconds')
 			logging.info(f'Animation name: {animation.name}')
 
-			run_code(animation.code, CODE_EMULATION_WAIT_TIME_SECONDS)
+			run_code(animation.code, animation.duration_of_emulation_in_seconds)
 		except NoCodeInDatabaseException:
 			logging.warning('No Code In Database')
 			sleep(1)
