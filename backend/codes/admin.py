@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Code, CustomUser, Config
+from .models import Code, CustomUser, Config, PriorityQueue
 
 
 admin.site.register(CustomUser)
@@ -15,4 +15,10 @@ class CodeAdmin(admin.ModelAdmin):
 class ConfigAdmin(admin.ModelAdmin):
     list_display = (
         'force_stop', 'force_run'
+    )
+
+@admin.register(PriorityQueue)
+class PriorityQueueAdmin(admin.ModelAdmin):
+    list_display = (
+        'code', 'priority'
     )
