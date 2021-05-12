@@ -52,6 +52,9 @@ function initVm(_NextFrame, _GetError, _Log, _IsWorking) {
       _GetError,
     },
     console: "redirect",
+    require: {
+      external: ['request'],
+    }
   });
 
   vm.on("console.log", (data) => {
