@@ -27,8 +27,8 @@ def check_fadein_fadeout(dmx_values):
 	delta_to_end = code_end_time - now_time
 	if delta_from_start < FADE_IN_TIME_MILLISECONDS: # fade in
 		multiplier = delta_from_start / FADE_IN_TIME_MILLISECONDS
-	elif delta_to_end < FADE_IN_TIME_MILLISECONDS: # fade out
-		multiplier = delta_to_end / FADE_IN_TIME_MILLISECONDS
+	elif delta_to_end < FADE_OUT_TIME_MILLISECONDS: # fade out
+		multiplier = delta_to_end / FADE_OUT_TIME_MILLISECONDS
 
 	dmx_values = [min(255, max(0, int(int(x) * (multiplier)))) for x in dmx_values.split(",")]
 	dmx_values = ",".join([str(e) for e in dmx_values])
