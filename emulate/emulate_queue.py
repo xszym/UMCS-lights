@@ -80,6 +80,8 @@ def start_process(code: str):
 	save_to_tmp_file(code)
 	process = subprocess.Popen(['node', 'emulate_redis.js'])
 	redis_db.set('DMXvalues_update_timestamp', current_milliseconds())
+	redis_db.set('Code_start_time', current_milliseconds())
+	redis_db.set('Code_end_time', current_milliseconds() + CODE_EMULATION_WAIT_TIME_SECONDS*1000)
 	return process
 
 
@@ -126,6 +128,7 @@ def wait_for_emulation(process, duration_of_emulation_in_seconds) -> None:
 
 def run_code(code: str, duration_of_emulation_in_seconds: int) -> None:
 	process = start_process(code)
+
 	wait_for_emulation(process, duration_of_emulation_in_seconds)
 	return_process_poll = process.poll()
 
