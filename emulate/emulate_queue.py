@@ -20,8 +20,7 @@ sys.path.insert(0, os.path.abspath('../backend'))
 os.environ['DJANGO_SETTINGS_MODULE'] = 'lights.settings'
 django.setup()
 
-from codes.models import Code
-from codes.models import Config
+from codes.models import Code, Config, PriorityQueue
 
 
 def current_milliseconds():
@@ -139,13 +138,27 @@ def run_code(code: str, duration_of_emulation_in_seconds: int) -> None:
 		logging.info(f'Process finished with return code {return_process_poll}')
 
 
-def retrieve_next_animation() -> Code:
+def retrieve_animation_from_priority_queue() -> Code:
+	if (priority_queue := PriorityQueue.objects.order_by('-priority').first()):
+		priority_code = priority_queue.code
+		priority_queue.delete()
+		return priority_code
+	return None
+
+
+def retrieve_random_animation() -> Code:
 	pk_list = Code.objects.filter(approved=True).values_list('pk', flat=True)
 	if len(pk_list) == 0:
 		raise NoCodeInDatabaseException
 	random_pk = random.choice(pk_list)
 	return Code.objects.get(pk=random_pk)
 
+
+def retrieve_next_animation() -> Code:
+	code_from_priority_queue = retrieve_animation_from_priority_queue()
+	if code_from_priority_queue is not None:
+		return code_from_priority_queue
+	return retrieve_random_animation()
 
 def reset_dmx_values():
 	number_of_values = 5 * 28 * 3  # 5 rows, 28 columns, 3 color values

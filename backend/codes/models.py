@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from solo.models import SingletonModel
-from django.core.validators import MinValueValidator
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 
 class CustomUser(AbstractUser):
@@ -27,6 +27,12 @@ class Code(models.Model):
 
     def __str__(self):
         return f'Code {self.id} {self.name}'
+
+
+class PriorityQueue(models.Model):
+    code = models.ForeignKey(Code, on_delete=models.CASCADE)
+    priority = models.PositiveIntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(10)])
+
 
 class Config(SingletonModel):
     force_stop = models.BooleanField(default=False)
