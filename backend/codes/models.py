@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from solo.models import SingletonModel
+from django.core.validators import MinValueValidator
 
 
 class CustomUser(AbstractUser):
@@ -22,6 +23,7 @@ class Code(models.Model):
     date_approved = models.DateTimeField(blank=True, null=True)
     language = models.IntegerField(choices=Languages.choices, default=Languages.JAVASCRIPT)
     is_example = models.BooleanField(default=False)
+    duration_of_emulation_in_seconds = models.PositiveIntegerField(default=30, validators=[MinValueValidator(8)])
 
     def __str__(self):
         return f'Code {self.id} {self.name}'
