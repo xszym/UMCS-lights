@@ -30,7 +30,7 @@ def current_milliseconds():
 
 CODE_EMULATION_WAIT_TIME_SECONDS = 30
 FRAME_TIMEOUT_MILLISECONDS = 5000
-FADEOUT_TIME_MILLISECONDS = 500
+FADEOUT_TIME_MILLISECONDS = 1000
 
 
 class FrameTimeoutException(BaseException):
@@ -137,7 +137,7 @@ def run_code(code: str, duration_of_emulation_in_seconds: int) -> None:
 	else:
 		logging.info(f'Process finished with return code {return_process_poll}')
 
-	run_fadeout(FADEOUT_TIME_MILLISECONDS + 9500)
+	run_fadeout(FADEOUT_TIME_MILLISECONDS)
 
 
 def run_fadeout(duration_of_fadeout_millis):
@@ -167,8 +167,17 @@ def reset_dmx_values():
 	redis_db.set('DMXvalues', serialized)
 
 
+def set_variables_from_config():
+	cfg = Config.objects.first()
+	if cfg is None:
+		return
+	global FADEOUT_TIME_MILLISECONDS
+	FADEOUT_TIME_MILLISECONDS = cfg.fadeout_time_milliseconds
+
+
 def main():
 	while True:
+		set_variables_from_config()
 		logging.info(f'Running code for {CODE_EMULATION_WAIT_TIME_SECONDS} seconds')
 		if not should_animate():
 			reset_dmx_values()

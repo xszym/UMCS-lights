@@ -32,3 +32,4 @@ class Config(SingletonModel):
     animation_start_time = models.TimeField(blank=True, null=True)
     animation_end_time = models.TimeField(blank=True, null=True)
     last_raspberry_pi_update = models.DateTimeField(blank=True, null=True)
+    fadeout_time_milliseconds = models.PositiveIntegerField(default=1000)
