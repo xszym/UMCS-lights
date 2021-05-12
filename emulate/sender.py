@@ -48,7 +48,7 @@ async def send_dmx_values(websocket, path):
 		dmx_values = update_dmx_values_fade(dmx_values)
 		await websocket.send(dmx_values)
 
-		delay = 100.0/1000.0
+		delay = 46.0/1000.0
 		stop_sender = redis_db.get('stop_sender')
 		if stop_sender is None or stop_sender.decode('utf-8') == str(True):
 			delay = 2.0
