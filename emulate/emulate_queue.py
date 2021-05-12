@@ -20,7 +20,7 @@ sys.path.insert(0, os.path.abspath('../backend'))
 os.environ['DJANGO_SETTINGS_MODULE'] = 'lights.settings'
 django.setup()
 
-from codes.models import Code, Config, PriorityQueue
+from codes.models import Code, Config, AnimationPriorityQueueElement
 
 
 def current_milliseconds():
@@ -139,7 +139,7 @@ def run_code(code: str, duration_of_emulation_in_seconds: int) -> None:
 
 
 def retrieve_animation_from_priority_queue() -> Code:
-	if (priority_queue := PriorityQueue.objects.order_by('-priority').first()):
+	if (priority_queue := AnimationPriorityQueueElement.objects.order_by('-priority').first()):
 		priority_code = priority_queue.code
 		priority_queue.delete()
 		return priority_code

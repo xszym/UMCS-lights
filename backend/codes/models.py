@@ -29,7 +29,7 @@ class Code(models.Model):
         return f'Code {self.id} {self.name}'
 
 
-class PriorityQueue(models.Model):
+class AnimationPriorityQueueElement(models.Model):
     code = models.ForeignKey(Code, on_delete=models.CASCADE)
     priority = models.PositiveIntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(10)])
 

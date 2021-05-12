@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Code, CustomUser, Config, PriorityQueue
+from .models import Code, CustomUser, Config, AnimationPriorityQueueElement
 
 
 admin.site.register(CustomUser)
@@ -17,8 +17,8 @@ class ConfigAdmin(admin.ModelAdmin):
         'force_stop', 'force_run'
     )
 
-@admin.register(PriorityQueue)
-class PriorityQueueAdmin(admin.ModelAdmin):
+@admin.register(AnimationPriorityQueueElement)
+class AnimationPriorityQueueElementAdmin(admin.ModelAdmin):
     list_display = (
         'code', 'priority'
     )
