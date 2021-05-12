@@ -30,6 +30,7 @@ def current_milliseconds():
 
 CODE_EMULATION_WAIT_TIME_SECONDS = 30
 FRAME_TIMEOUT_MILLISECONDS = 5000
+FADEOUT_TIME_MILLISECONDS = 500
 
 
 class FrameTimeoutException(BaseException):
@@ -135,6 +136,21 @@ def run_code(code: str, duration_of_emulation_in_seconds: int) -> None:
 		process.kill()
 	else:
 		logging.info(f'Process finished with return code {return_process_poll}')
+
+	run_fadeout(FADEOUT_TIME_MILLISECONDS + 9500)
+
+
+def run_fadeout(duration_of_fadeout_millis):
+	dmx_values = redis_db.get('DMXvalues')
+	if dmx_values is None:
+		return
+
+	dmx_values = [int(x) for x in dmx_values.decode('utf-8').split(",")]
+	for _ in range(255):
+		dmx_values = [max(0, x-1) for x in dmx_values]
+		serialized = ",".join([str(e) for e in dmx_values])
+		redis_db.set('DMXvalues', serialized)
+		sleep(duration_of_fadeout_millis/255/1000)
 
 
 def retrieve_next_animation() -> Code:
