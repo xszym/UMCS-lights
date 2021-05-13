@@ -53,7 +53,7 @@ async def send_dmx_values(websocket, path):
 		if stop_sender is None or stop_sender.decode('utf-8') == str(True):
 			delay = 2.0
 		await asyncio.sleep(delay)
-  
+
 
 start_server = websockets.serve(
 	send_dmx_values,

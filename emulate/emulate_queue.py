@@ -11,8 +11,8 @@ from django.utils import timezone
 logging.basicConfig(encoding='utf-8', level=logging.WARNING)
 
 redis_db = redis.Redis(
-	host=os.environ['REDIS_HOST'],
-	port=int(os.environ['REDIS_PORT'])
+	host=os.environ.get('REDIS_HOST'),
+	port=int(os.environ.get('REDIS_PORT'))
 )
 
 sys.path.insert(0, os.path.abspath('../backend'))
