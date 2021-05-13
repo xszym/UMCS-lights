@@ -1,11 +1,6 @@
 import subprocess
-from redis import Redis
-from pytest_mock_resources import create_redis_fixture
 
 import emulate_queue
-
-
-redis = create_redis_fixture()
 
 
 class MockProcess:
@@ -14,6 +9,10 @@ class MockProcess:
 
     def poll(self):
         return self.return_value
+
+
+def test_hello(get_hello):
+    assert get_hello == 'hello'
 
 
 def test_check_process_returns_none():
@@ -29,9 +28,7 @@ def test_check_process_returns_process_output():
         assert False
 
 
-def test_start_process(monkeypatch, redis):
-    client = Redis(**redis.pmr_credentials.as_redis_kwargs())
-
+def test_start_process(monkeypatch, redis_client):
     code_test = 'testCode'
     milliseconds = 1000
 
@@ -47,11 +44,10 @@ def test_start_process(monkeypatch, redis):
 
     monkeypatch.setattr(emulate_queue, 'save_to_tmp_file', mock_save_to_tmp_file)
     monkeypatch.setattr(emulate_queue, 'current_milliseconds', mock_milliseconds)
-    monkeypatch.setattr(emulate_queue, 'redis_db', redis)
     monkeypatch.setattr(subprocess, 'Popen', mock_popen)
 
     process = emulate_queue.start_process(code_test, 30)
 
-    value = client.get('DMXvalues_update_timestamp').decode('utf-8')
+    value = redis_client.get('DMXvalues_update_timestamp').decode('utf-8')
     assert value == str(milliseconds)
     assert process is None
