@@ -50,7 +50,7 @@ def test_start_process(monkeypatch, redis):
     monkeypatch.setattr(emulate_queue, 'redis_db', redis)
     monkeypatch.setattr(subprocess, 'Popen', mock_popen)
 
-    process = emulate_queue.start_process(code_test)
+    process = emulate_queue.start_process(code_test, 30)
 
     value = client.get('DMXvalues_update_timestamp').decode('utf-8')
     assert value == str(milliseconds)
