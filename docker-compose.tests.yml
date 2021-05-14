@@ -6,10 +6,14 @@ services:
       context: .
       dockerfile: ./EmulateDockerfileTests
     command: "pytest /usr/src/app/emulate/tests"
-#    env_file:
-#      - ./emulate/.env.dev
-    # depends_on:
-      # - redis
+#    depends_on:
+#      - redis
+    # NIEZBEDNE - mockowanie redisa tworzy kontenery dockerowe
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+    env_file:
+      - ./emulate/.env.dev
   #     - backend
   # backend:
   #   build: ./backend
@@ -31,5 +35,5 @@ services:
   #   image: postgres:9.6.21-alpine
   #   env_file:
   #     - ./backend/.env.dev
-  # redis:
-  #   image: redis:6.2.1-alpine
+#  redis:
+#    image: redis:6.2.1-alpine
