@@ -1,5 +1,6 @@
 import pytest
 import logging
+import django
 
 from tests import factories
 from codes.models import Code, Config, AnimationPriorityQueueElement
