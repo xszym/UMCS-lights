@@ -1,5 +1,5 @@
 import factory
-from codes.models import Code
+from codes.models import Code, Config, AnimationPriorityQueueElement
 
 
 class CodeFactory(factory.django.DjangoModelFactory):

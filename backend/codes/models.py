@@ -32,7 +32,8 @@ class Code(models.Model):
 class PriorityQueue(models.Model):
     code = models.ForeignKey(Code, on_delete=models.CASCADE)
     priority = models.PositiveIntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(10)])
-
+    def pop_first():
+        return AnimationPriorityQueueElement.objects.order_by('-priority').first().delete() 
 
 class Config(SingletonModel):
     force_stop = models.BooleanField(default=False)
