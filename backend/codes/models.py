@@ -34,7 +34,10 @@ class AnimationPriorityQueueElement(models.Model):
     priority = models.PositiveIntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(10)])
 
     def pop_first():
-        return AnimationPriorityQueueElement.objects.order_by('-priority').first().delete() 
+        highest_priority_element = AnimationPriorityQueueElement.objects.order_by('-priority').first()
+        AnimationPriorityQueueElement.objects.order_by('-priority').first().delete() 
+        
+        return highest_priority_element
         
 
 class Config(SingletonModel):
