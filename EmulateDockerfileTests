@@ -1,0 +1,12 @@
+FROM python:3.8.5
+
+# WORKDIR /usr/src/app/
+
+# COPY ./emulate/package.json .
+# RUN npm i
+
+COPY ./emulate/requirements-tests.txt .
+RUN pip install -r requirements-tests.txt
+
+COPY . .
+WORKDIR /usr/src/app/emulate
