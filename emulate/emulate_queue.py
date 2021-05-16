@@ -20,7 +20,7 @@ sys.path.insert(0, os.path.abspath('../backend'))
 os.environ['DJANGO_SETTINGS_MODULE'] = 'lights.settings'
 django.setup()
 
-from codes.models import Code, Config, PriorityQueue
+from codes.models import Code, Config, AnimationPriorityQueueElement
 
 
 def current_milliseconds():
@@ -128,18 +128,21 @@ def run_code(code: str, duration_of_emulation_in_seconds: int) -> None:
 	process = start_process(code, duration_of_emulation_in_seconds)
 
 	wait_for_emulation(process, duration_of_emulation_in_seconds)
-	return_process_poll = process.poll()
+	return_code = process.poll()
 
-	if return_process_poll is None:
+	if return_code is None:
 		logging.warning('Process timed out')
 		logging.warning('Killing process')
 		process.kill()
+	elif return_code == 0:
+		logging.info(f'Process finished properly')
 	else:
-		logging.info(f'Process finished with return code {return_process_poll}')
+		logging.info(f'Process finished with return code {return_code}')
+		raise UserCodeException
 
 
 def retrieve_animation_from_priority_queue() -> Code:
-	if (priority_queue := PriorityQueue.objects.order_by('-priority').first()):
+	if (priority_queue := AnimationPriorityQueueElement.objects.order_by('-priority').first()):
 		priority_code = priority_queue.code
 		priority_queue.delete()
 		return priority_code
@@ -181,6 +184,13 @@ def main():
 			logging.info(f'Animation name: {animation.name}')
 
 			run_code(animation.code, animation.duration_of_emulation_in_seconds)
+
+		except UserCodeException:
+			logging.warning('User animation generated error')
+			animation.generated_error = True
+			animation.approved = False
+			animation.date_approved = None
+			animation.save()
 		except NoCodeInDatabaseException:
 			logging.warning('No Code In Database')
 			sleep(1)

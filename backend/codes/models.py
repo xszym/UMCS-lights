@@ -24,6 +24,7 @@ class Code(models.Model):
     language = models.IntegerField(choices=Languages.choices, default=Languages.JAVASCRIPT)
     is_example = models.BooleanField(default=False)
     duration_of_emulation_in_seconds = models.PositiveIntegerField(default=30, validators=[MinValueValidator(8)])
+    generated_error = models.BooleanField(default=False)
 
     def __str__(self):
         return f'Code {self.id} {self.name}'

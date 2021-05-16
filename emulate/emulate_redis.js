@@ -17,6 +17,7 @@ function myNextFrame(dmxValuesIn) {
 
 function getError(message) {
   console.error(message);
+  process.exit(1);
 }
 
 let working = true;
@@ -43,6 +44,7 @@ function run(userCode) {
     vm.run(code, "_vm.js");
   } catch (error) {
     console.error(error.message);
+    process.exit(1);
   }
 }
 
