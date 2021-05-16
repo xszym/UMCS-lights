@@ -124,7 +124,7 @@ def wait_for_emulation(process, duration_of_emulation_in_seconds) -> None:
 		sleep(1)
 
 
-def run_code(code: str, duration_of_emulation_in_seconds: int) -> int:
+def run_code(code: str, duration_of_emulation_in_seconds: int) -> None:
 	process = start_process(code, duration_of_emulation_in_seconds)
 
 	wait_for_emulation(process, duration_of_emulation_in_seconds)
@@ -134,11 +134,11 @@ def run_code(code: str, duration_of_emulation_in_seconds: int) -> int:
 		logging.warning('Process timed out')
 		logging.warning('Killing process')
 		process.kill()
-		return_code = 0
+	elif return_code == 0:
+		logging.info(f'Process finished properly')
 	else:
 		logging.info(f'Process finished with return code {return_code}')
-
-	return return_code
+		raise UserCodeException
 
 
 def retrieve_animation_from_priority_queue() -> Code:
@@ -183,12 +183,14 @@ def main():
 			logging.info(f'Running code for {animation.duration_of_emulation_in_seconds} seconds')
 			logging.info(f'Animation name: {animation.name}')
 
-			return_code = run_code(animation.code, animation.duration_of_emulation_in_seconds)
-			if return_code != 0:
-				animation.generated_error = True
-				animation.approved = False
-				animation.date_approved = None
-				animation.save()
+			run_code(animation.code, animation.duration_of_emulation_in_seconds)
+
+		except UserCodeException:
+			logging.warning('User animation generated error')
+			animation.generated_error = True
+			animation.approved = False
+			animation.date_approved = None
+			animation.save()
 		except NoCodeInDatabaseException:
 			logging.warning('No Code In Database')
 			sleep(1)
