@@ -1,5 +1,5 @@
 import factory
-from codes.models import Code
+from codes.models import Code, Config, AnimationPriorityQueueElement
 
 
 class CodeFactory(factory.django.DjangoModelFactory):
@@ -10,3 +10,20 @@ class CodeFactory(factory.django.DjangoModelFactory):
     author = factory.Sequence(lambda n: 'Simon %s' % n)
     code = 'print(123)'
     is_example = False
+
+
+class ConfigFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Config
+
+    force_stop = False
+    force_run = False
+    
+
+class AnimationPriorityQueueElementFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = AnimationPriorityQueueElement
+
+    code = factory.SubFactory(CodeFactory)
+    priority = 0
+    
