@@ -29,7 +29,7 @@ def get_fade_multiplier():
 		multiplier = delta_from_start / FADE_IN_TIME_MILLISECONDS
 	elif delta_to_end < FADE_OUT_TIME_MILLISECONDS:
 		multiplier = delta_to_end / FADE_OUT_TIME_MILLISECONDS
-	multiplier = 0.0 if multiplier < 0.0 else multiplier
+	multiplier = max(0.0, multiplier)
 	return multiplier
 
 
@@ -40,7 +40,7 @@ def update_dmx_values_fade(dmx_values):
 	dmx_values = ",".join([str(e) for e in dmx_values])
 	
 	save_to_redis_treshold = 0.0
-	if multiplier = save_to_redis_treshold:
+	if multiplier == save_to_redis_treshold:
 		save_dmx_values_to_redis(dmx_values)
 
 	return dmx_values
