@@ -29,14 +29,27 @@ def get_fade_multiplier():
 		multiplier = delta_from_start / FADE_IN_TIME_MILLISECONDS
 	elif delta_to_end < FADE_OUT_TIME_MILLISECONDS:
 		multiplier = delta_to_end / FADE_OUT_TIME_MILLISECONDS
+	multiplier = 0.0 if multiplier < 0.0 else multiplier
 	return multiplier
 
 
 def update_dmx_values_fade(dmx_values):
 	multiplier = get_fade_multiplier()
+	
 	dmx_values = [min(255, max(0, int(int(x) * (multiplier)))) for x in dmx_values.split(",")]
 	dmx_values = ",".join([str(e) for e in dmx_values])
+	
+	save_to_redis_treshold = 0.0
+	if multiplier = save_to_redis_treshold:
+		save_dmx_values_to_redis(dmx_values)
+
 	return dmx_values
+
+
+def save_dmx_values_to_redis(dmx_values):
+	redis_db.set('DMXvalues', dmx_values)
+	redis_db.set('DMXvalues_update_timestamp', current_milliseconds())
+
 	
 
 async def send_dmx_values(websocket, path):
