@@ -27,9 +27,9 @@ services:
       - backend
   backend:
     build: ./backend
-    command: ["./wait-for-it.sh", "database:5432", "--", "gunicorn", "lights.wsgi:application",  "--bind", "0.0.0.0:8000"]
+    command: ["./wait-for-it.sh", "database:5432", "--", "python", "manage.py", "runserver", "0.0.0.0:8000"]
     ports:
-      - 58894:8000
+      - 8000:8000
     env_file:
       - ./backend/.env
     depends_on:
