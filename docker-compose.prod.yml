@@ -27,9 +27,9 @@ services:
       - backend
   backend:
     build: ./backend
-    command: ["./wait-for-it.sh", "database:5432", "--", "python", "manage.py", "runserver", "0.0.0.0:8000"]
+    command: ["./wait-for-it.sh", "database:5432", "--", "python", "manage.py", "runserver", "0.0.0.0:58894"]
     ports:
-      - 8000:8000
+      - 58894:58894
     env_file:
       - ./backend/.env
     depends_on:
