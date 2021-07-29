@@ -9,6 +9,8 @@ services:
     restart: always
     env_file:
       - ./emulate/.env.dev
+    ports:
+      - 20001:20001/udp
     depends_on:
       - redis
       - backend

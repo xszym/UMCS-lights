@@ -1,10 +1,13 @@
+import json
 import os
 import sys
+import socket
 import redis
 import logging
 import django
 import random
 import subprocess
+import threading
 from time import sleep, time
 from django.utils import timezone
 
@@ -163,10 +166,41 @@ def retrieve_next_animation() -> Code:
 		return code_from_priority_queue
 	return retrieve_random_animation()
 
+
 def reset_dmx_values():
 	number_of_values = 5 * 28 * 3  # 5 rows, 28 columns, 3 color values
 	serialized = ",".join("0" * number_of_values)
 	redis_db.set('DMXvalues', serialized)
+
+
+def start_udp_server():
+	UDPServerSocket = socket.socket(socket.AF_INET, type=socket.SOCK_DGRAM)
+	UDPServerSocket.setblocking(0)
+	UDPServerSocket.bind(("0.0.0.0", int(os.environ.get('UDP_SERVER_PORT', 20001))))
+	while Config.objects.first().udp_receive_run:
+		try:
+			bytesAddressPair = UDPServerSocket.recvfrom(2048)
+
+			message = bytesAddressPair[0]
+			message = message.decode('utf-8')
+			message = to_json(message)
+
+			if message and str(message.get("key")) == str(Config.objects.first().udp_key):
+				serialized = ",".join([str(x) for x in list(message["stage"])])
+				redis_db.set('DMXvalues', serialized)
+		except Exception as e:
+			pass
+
+	reset_dmx_values()
+	UDPServerSocket.close()
+
+
+def to_json(json_str):
+    try:
+        json_object = json.loads(json_str)
+        return json_object
+    except ValueError as e:
+        return None
 
 
 def main():
@@ -176,8 +210,16 @@ def main():
 			redis_db.set('stop_sender', str(True))
 			sleep(2)
 			continue
-
 		redis_db.set('stop_sender', str(False))
+
+		try:
+			start_udp_server()
+		except Exception as e:
+			logging.warning('UDP server error ' + e)
+			conf = Config.objects.first()
+			conf.udp_receive_run = False
+			conf.save()
+
 		try:
 			animation = retrieve_next_animation()
 			logging.info(f'Running code for {animation.duration_of_emulation_in_seconds} seconds')

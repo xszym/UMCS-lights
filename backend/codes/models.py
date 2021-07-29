@@ -44,6 +44,12 @@ class AnimationPriorityQueueElement(models.Model):
 class Config(SingletonModel):
     force_stop = models.BooleanField(default=False)
     force_run = models.BooleanField(default=False)
+    udp_receive_run = models.BooleanField(default=False)
+    udp_key = models.PositiveIntegerField(default=99999, validators=[MinValueValidator(10000), MaxValueValidator(99999)])
+
     animation_start_time = models.TimeField(blank=True, null=True)
     animation_end_time = models.TimeField(blank=True, null=True)
     last_raspberry_pi_update = models.DateTimeField(blank=True, null=True)
+
+    def __str__(self):
+        return f'Code {self.id}'

@@ -23,6 +23,9 @@ The application will allow users to create scenes and animations that will be di
 # Run application
 `docker-compose up`
 
+## Create superuser
+```docker-compose exec backend python manage.py createsuperuser```
+
 
 ## Migrations
 Run migrations when server is running
