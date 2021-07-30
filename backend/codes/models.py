@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from solo.models import SingletonModel
-from django.core.validators import MinValueValidator, MaxValueValidator
+from django.core.validators import MinValueValidator, MaxValueValidator, MinLengthValidator
 
 
 class CustomUser(AbstractUser):
@@ -45,7 +45,7 @@ class Config(SingletonModel):
     force_stop = models.BooleanField(default=False)
     force_run = models.BooleanField(default=False)
     udp_receive_run = models.BooleanField(default=False)
-    udp_key = models.PositiveIntegerField(default=99999, validators=[MinValueValidator(10000), MaxValueValidator(99999)])
+    udp_key = models.CharField(default='ABC123', max_length=8, validators=[MinLengthValidator(4)])
 
     animation_start_time = models.TimeField(blank=True, null=True)
     animation_end_time = models.TimeField(blank=True, null=True)

@@ -174,10 +174,12 @@ def reset_dmx_values():
 
 
 def start_udp_server():
+	last_udp_server_update_millis = current_milliseconds()
 	UDPServerSocket = socket.socket(socket.AF_INET, type=socket.SOCK_DGRAM)
 	UDPServerSocket.setblocking(0)
 	UDPServerSocket.bind(("0.0.0.0", int(os.environ.get('UDP_SERVER_PORT', 20001))))
-	while Config.objects.first().udp_receive_run:
+	config = Config.objects.first()
+	while config.udp_receive_run:
 		try:
 			bytesAddressPair = UDPServerSocket.recvfrom(2048)
 
@@ -185,11 +187,18 @@ def start_udp_server():
 			message = message.decode('utf-8')
 			message = to_json(message)
 
-			if message and str(message.get("key")) == str(Config.objects.first().udp_key):
+			if message and str(message.get("key")) == str(config.udp_key):
 				serialized = ",".join([str(x) for x in list(message["stage"])])
 				redis_db.set('DMXvalues', serialized)
+				last_udp_server_update_millis = current_milliseconds()
 		except Exception as e:
 			pass
+
+		if (current_milliseconds() - last_udp_server_update_millis) > 60000:
+			config.udp_receive_run = False
+			config.save()
+			break
+		config = Config.objects.first()
 
 	reset_dmx_values()
 	UDPServerSocket.close()
@@ -215,7 +224,7 @@ def main():
 		try:
 			start_udp_server()
 		except Exception as e:
-			logging.warning('UDP server error ' + e)
+			logging.warning('UDP server error ' + str(e))
 			conf = Config.objects.first()
 			conf.udp_receive_run = False
 			conf.save()
