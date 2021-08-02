@@ -179,7 +179,6 @@ def get_dmx_values_from_udp_server():
 	while config.udp_receive_run:
 		try:
 			dmx_values_from_UDP = redis_db.get('DMXvalues_from_UDP')
-			print(dmx_values_from_UDP)
 			redis_db.set('DMXvalues', dmx_values_from_UDP)
 		except Exception as e:
 			pass

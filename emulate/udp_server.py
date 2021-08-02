@@ -51,7 +51,6 @@ def start_udp_server():
             if message and str(message.get("key")) == str(config.udp_key):
                 serialized = ",".join([str(x) for x in list(message["stage"])])
                 redis_db.set('DMXvalues_from_UDP', serialized)
-                logging.info(serialized)
                 redis_db.set('DMXvalues_from_UDP_update_timestamp', current_milliseconds())
         except Exception as e:
             pass
@@ -72,8 +71,6 @@ def to_json(json_str):
 def main():
     while True:
         try:
-            # config = Config.objects.first()
-            # if config.udp_receive_run:
             start_udp_server()
             sleep(1)
         except Exception as e:
