@@ -104,6 +104,8 @@ def should_animate() -> bool:
 		return True
 	if cfg.animation_start_time is None or cfg.animation_end_time is None:
 		return True
+	if cfg.udp_receive_run is True:
+		return False
 	return is_time_between(cfg.animation_start_time, cfg.animation_end_time)
 
 
@@ -180,10 +182,12 @@ def get_dmx_values_from_udp_server():
 		try:
 			dmx_values_from_UDP = redis_db.get('DMXvalues_from_UDP').decode('utf-8')
 			redis_db.set('DMXvalues', dmx_values_from_UDP)
+			redis_db.set('Code_end_time', current_milliseconds() + 60000)
 		except Exception as e:
 			logging.warning(e)
 		
 		last_udp_server_update_millis = int(redis_db.get('DMXvalues_from_UDP_update_timestamp').decode('utf-8'))
+
 		if (current_milliseconds() - last_udp_server_update_millis) > 60000:
 			config.udp_receive_run = False
 			config.save()
