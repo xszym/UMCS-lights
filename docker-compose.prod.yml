@@ -34,7 +34,7 @@ services:
     ports:
       - 20002:20002/udp
     env_file:
-      - ./emulate/.env.dev
+      - ./emulate/.env
     depends_on:
       - redis
       - backend

@@ -178,12 +178,12 @@ def get_dmx_values_from_udp_server():
 	config = Config.objects.first()
 	while config.udp_receive_run:
 		try:
-			dmx_values_from_UDP = redis_db.get('DMXvalues_from_UDP')
+			dmx_values_from_UDP = redis_db.get('DMXvalues_from_UDP').decode('utf-8')
 			redis_db.set('DMXvalues', dmx_values_from_UDP)
 		except Exception as e:
-			pass
+			logging.warning(e)
 		
-		last_udp_server_update_millis = int(redis_db.get('DMXvalues_from_UDP_update_timestamp'))
+		last_udp_server_update_millis = int(redis_db.get('DMXvalues_from_UDP_update_timestamp').decode('utf-8'))
 		if (current_milliseconds() - last_udp_server_update_millis) > 60000:
 			config.udp_receive_run = False
 			config.save()
