@@ -67,5 +67,5 @@ urllib3==1.26.4
 vine==5.0.0
 wcwidth==0.2.5
 websocket-client==0.59.0
-websockets==8.1
+websockets==9.1
 zipp==3.4.1
