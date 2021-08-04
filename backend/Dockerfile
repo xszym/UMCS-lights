@@ -14,7 +14,7 @@ RUN pip install --upgrade pip
 COPY ./requirements.txt .
 RUN pip install -r requirements.txt
 
-#copy env files.
+#copy create .env files.
 COPY ./.env.dev .env
 COPY ../emulate/.env.dev ../emulate/.env
 
