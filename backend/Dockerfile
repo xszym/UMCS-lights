@@ -15,8 +15,11 @@ COPY ./requirements.txt .
 RUN pip install -r requirements.txt
 
 #copy create .env files.
-COPY ./.env.dev .env
 COPY ../emulate/.env.dev ../emulate/.env
+COPY ./.env.dev .env
+
+
+
 
 # add app
 COPY . .
