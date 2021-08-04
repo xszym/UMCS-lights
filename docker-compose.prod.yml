@@ -9,8 +9,6 @@ services:
     restart: always
     env_file:
       - ./emulate/.env
-    ports:
-      - 20001:20001/udp
     depends_on:
       - redis
       - backend
@@ -22,6 +20,19 @@ services:
     ports:
       - 5678:5678
     restart: always
+    env_file:
+      - ./emulate/.env
+    depends_on:
+      - redis
+      - backend
+  udp_server:
+    build:
+      context: .
+      dockerfile: ./EmulateDockerfile
+    command: ["python3", "udp_server.py"]
+    restart: always
+    ports:
+      - 20002:20002/udp
     env_file:
       - ./emulate/.env
     depends_on:

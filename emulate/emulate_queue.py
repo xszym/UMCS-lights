@@ -104,6 +104,8 @@ def should_animate() -> bool:
 		return True
 	if cfg.animation_start_time is None or cfg.animation_end_time is None:
 		return True
+	if cfg.udp_receive_run is True:
+		return False
 	return is_time_between(cfg.animation_start_time, cfg.animation_end_time)
 
 
@@ -173,26 +175,18 @@ def reset_dmx_values():
 	redis_db.set('DMXvalues', serialized)
 
 
-def start_udp_server():
+def get_dmx_values_from_udp_server():
 	last_udp_server_update_millis = current_milliseconds()
-	UDPServerSocket = socket.socket(socket.AF_INET, type=socket.SOCK_DGRAM)
-	UDPServerSocket.setblocking(0)
-	UDPServerSocket.bind(("0.0.0.0", int(os.environ.get('UDP_SERVER_PORT', 20001))))
 	config = Config.objects.first()
 	while config.udp_receive_run:
 		try:
-			bytesAddressPair = UDPServerSocket.recvfrom(2048)
-
-			message = bytesAddressPair[0]
-			message = message.decode('utf-8')
-			message = to_json(message)
-
-			if message and str(message.get("key")) == str(config.udp_key):
-				serialized = ",".join([str(x) for x in list(message["stage"])])
-				redis_db.set('DMXvalues', serialized)
-				last_udp_server_update_millis = current_milliseconds()
+			dmx_values_from_UDP = redis_db.get('DMXvalues_from_UDP').decode('utf-8')
+			redis_db.set('DMXvalues', dmx_values_from_UDP)
+			redis_db.set('Code_end_time', current_milliseconds() + 60000)
 		except Exception as e:
-			pass
+			logging.warning(e)
+		
+		last_udp_server_update_millis = int(redis_db.get('DMXvalues_from_UDP_update_timestamp').decode('utf-8'))
 
 		if (current_milliseconds() - last_udp_server_update_millis) > 60000:
 			config.udp_receive_run = False
@@ -201,7 +195,6 @@ def start_udp_server():
 		config = Config.objects.first()
 
 	reset_dmx_values()
-	UDPServerSocket.close()
 
 
 def to_json(json_str):
@@ -222,9 +215,9 @@ def main():
 		redis_db.set('stop_sender', str(False))
 
 		try:
-			start_udp_server()
+			get_dmx_values_from_udp_server()
 		except Exception as e:
-			logging.warning('UDP server error ' + str(e))
+			logging.warning('Error when getting values from UDP server ' + str(e))
 			conf = Config.objects.first()
 			conf.udp_receive_run = False
 			conf.save()
