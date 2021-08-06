@@ -1,6 +1,15 @@
 version: '3.8'
 
 services:
+  nginx:
+    build: ./nginx
+    volumes:
+      - static_volume:/home/app/web/staticfiles
+      - media_volume:/home/app/web/mediafiles
+    ports:
+      - 1337:80
+    depends_on:
+      - backend
   emulate:
     build:
       context: .
@@ -39,12 +48,19 @@ services:
       - redis
       - backend
   backend:
-    build: ./backend
-    command: ["./wait-for-it.sh", "database:5432", "--", "python", "manage.py", "runserver", "0.0.0.0:58894"]
-    ports:
-      - 58894:58894
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.prod
+    #their
+    command: gunicorn lights.wsgi:application --bind 0.0.0.0:8000
+    #my
+    #command: ["./wait-for-it.sh", "database:5432", "--", "gunicorn", "hello_django.wsgi:application", "--bind", "0.0.0.0:8000"]
+    #original
+    #command: ["./wait-for-it.sh", "database:5432", "--", "python", "manage.py", "runserver", "0.0.0.0:58894"]
+    expose:
+      - 8000
     env_file:
-      - ./backend/.env.dev
+      - ./backend/.env.prod
     depends_on:
       - database
       - redis
@@ -57,7 +73,7 @@ services:
       - redis
       - database
   database:
-    image: postgres:9.6.21-alpine
+    image: postgres:12.0-alpine
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     env_file:
@@ -67,3 +83,5 @@ services:
 
 volumes:
   postgres_data:
+  static_volume:
+  media_volume:
