@@ -14,23 +14,17 @@ ENV PYTHONUNBUFFERED 1
 
 # install psycopg2 dependencies
 RUN apk update \
-    && apk add postgresql-dev python3-dev musl-dev
-RUN apk add build-base
-
-RUN apk add --no-cache --virtual .build-deps gcc musl-dev
-
-
-#RUN apk add libpq-dev
-RUN apk add --no-cache gcc
+    && apk add postgresql-dev python3-dev musl-dev gcc
 # lint
 #RUN pip install --upgrade pip
 RUN /usr/local/bin/python -m pip install --upgrade pip
-#RUN pip install flake8
+RUN pip install flake8
 COPY . .
 #RUN flake8 --ignore=E501,F401 .
 
 # install dependencies
 COPY ./requirements.txt .
+
 RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels -r requirements.txt
 
 
@@ -57,11 +51,23 @@ WORKDIR $APP_HOME
 
 # install dependencies
 RUN apk update && apk add libpq
+# install psycopg2 dependencies
+RUN apk update \
+    && apk add postgresql-dev python3-dev musl-dev
+RUN apk add gcc
+
 COPY --from=builder /usr/src/app/wheels /wheels
 COPY --from=builder /usr/src/app/requirements.txt .
 
+
+# install required dependencies
+RUN apk add build-base
+RUN apk add --no-cache --virtual .build-deps gcc musl-dev
+RUN apk update && apk add python3-dev \
+                        gcc \
+                        libc-dev
 RUN pip install --no-cache /wheels/*
-#RUN pip install -r requirements.txt
+
 # copy entrypoint-prod.sh
 COPY ./entrypoint.prod.sh $APP_HOME
 

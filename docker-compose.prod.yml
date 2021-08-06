@@ -10,43 +10,43 @@ services:
       - 1337:80
     depends_on:
       - backend
-  emulate:
-    build:
-      context: .
-      dockerfile: ./EmulateDockerfile
-    command: ["python3", "emulate_queue.py"]
-    restart: always
-    env_file:
-      - ./emulate/.env.dev
-    depends_on:
-      - redis
-      - backend
-  sender:
-    build:
-      context: .
-      dockerfile: ./EmulateDockerfile
-    command: ["python3", "sender.py"]
-    ports:
-      - 5678:5678
-    restart: always
-    env_file:
-      - ./emulate/.env.dev
-    depends_on:
-      - redis
-      - backend
-  udp_server:
-    build:
-      context: .
-      dockerfile: ./EmulateDockerfile
-    command: ["python3", "udp_server.py"]
-    restart: always
-    ports:
-      - 20002:20002/udp
-    env_file:
-      - ./emulate/.env.dev
-    depends_on:
-      - redis
-      - backend
+  #emulate:
+  #  build:
+  #    context: .
+  #    dockerfile: ./EmulateDockerfile
+  #  command: ["python3", "emulate_queue.py"]
+  #  restart: always
+  #  env_file:
+  #    - ./emulate/.env.dev
+  #  depends_on:
+  #    - redis
+  #    - backend
+  #sender:
+  #  build:
+  #    context: .
+  #    dockerfile: ./EmulateDockerfile
+  #  command: ["python3", "sender.py"]
+  #  ports:
+  #    - 5678:5678
+  #  restart: always
+  #  env_file:
+  #    - ./emulate/.env.dev
+  #  depends_on:
+  #    - redis
+  #    - backend
+  #udp_server:
+  #  build:
+  #    context: .
+  #    dockerfile: ./EmulateDockerfile
+  #  command: ["python3", "udp_server.py"]
+  #  restart: always
+  #  ports:
+  #    - 20002:20002/udp
+  #  env_file:
+  #    - ./emulate/.env.dev
+  #  depends_on:
+  #    - redis
+  #    - backend
   backend:
     build:
       context: ./backend
@@ -60,20 +60,20 @@ services:
     expose:
       - 8000
     env_file:
-      - ./backend/.env.prod
+      - backend/.env.prod
     depends_on:
       - database
       - redis
-  celery:
-    build: ./backend
-    command: celery -A lights worker -l INFO
-    volumes:
-      - ./backend/:/user/src/app/
-    depends_on:
-      - redis
-      - database
+  #celery:
+  #  build: ./backend
+  #  command: celery -A lights worker -l INFO
+  #  volumes:
+  #    - ./backend/:/user/src/app/
+  #  depends_on:
+  #    - redis
+  #    - database
   database:
-    image: postgres:12.0-alpine
+    image: postgres:9.6-alpine
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     env_file:
