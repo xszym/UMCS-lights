@@ -1,0 +1,11 @@
+version: '3.3'
+
+services:
+  dmx_client:
+    build: .
+    command: ["python3", "dmx_client.py"]
+    restart: always
+    devices:
+      - /dev/ttyUSB0:/dev/ttyUSB0
+    env_file:
+      - .env.dev

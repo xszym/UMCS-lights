@@ -1,0 +1,13 @@
+__pycache__
+env
+venv
+*.sqlite3
+.idea
+database/
+.env
+.pytest_cache
+node_modules
+.coverage
+.coveragerc
+htmlcov/
+/backend/coverage.xml

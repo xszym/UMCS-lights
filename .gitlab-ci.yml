@@ -1,0 +1,45 @@
+image: tmaier/docker-compose:latest
+
+stages:
+  - test
+  - deploy
+
+services:
+  - docker:dind
+
+before_script:
+  - docker info
+  - docker-compose --version
+  - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
+
+test:
+  stage: test
+  tags:
+    - docker
+  script:
+    - docker-compose -f docker-compose.tests.yml up -d
+    - sleep 15
+    - docker-compose exec -T backend python manage.py migrate
+    - docker-compose exec -T backend pytest -p no:warnings --cov=. --cov-report html
+    - docker-compose exec -T backend coverage report --precision=2
+
+deploy:
+  stage: deploy
+  tags:
+    - docker
+  script:
+    - docker-compose push
+    - chmod og= $ID_RSA
+    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP -p $SERVER_SSH_PORT
+      "cd UMCS-lights &&
+      git pull  &&
+      git checkout development &&
+      docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY &&
+      docker-compose pull &&
+      docker-compose stop &&
+      docker-compose -f docker-compose.prod.yml up --build -d &&
+      sleep 15 &&
+      docker-compose exec -T backend python manage.py migrate"
+  only:
+    - main
+    - development

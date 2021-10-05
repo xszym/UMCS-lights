@@ -1,0 +1,4 @@
+websockets==8.1
+pyserial==3.5
+numpy==1.20.2
+python-dotenv==0.17.1

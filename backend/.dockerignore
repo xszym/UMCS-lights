@@ -1,0 +1,8 @@
+env
+.dockerignore
+Dockerfile
+Dockerfile.prod
+.pytest_cache
+.coverage
+.coveragerc
+htmlcov/

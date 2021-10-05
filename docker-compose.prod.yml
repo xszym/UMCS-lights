@@ -1,0 +1,64 @@
+version: '3.8'
+
+services:
+  emulate:
+    build:
+      context: .
+      dockerfile: ./EmulateDockerfile
+    command: ["python3", "emulate_queue.py"]
+    restart: always
+    env_file:
+      - ./emulate/.env
+    depends_on:
+      - redis
+      - backend
+  sender:
+    build:
+      context: .
+      dockerfile: ./EmulateDockerfile
+    command: ["python3", "sender.py"]
+    ports:
+      - 5678:5678
+    restart: always
+    env_file:
+      - ./emulate/.env
+    depends_on:
+      - redis
+      - backend
+  udp_server:
+    build:
+      context: .
+      dockerfile: ./EmulateDockerfile
+    command: ["python3", "udp_server.py"]
+    restart: always
+    ports:
+      - 20002:20002/udp
+    env_file:
+      - ./emulate/.env
+    depends_on:
+      - redis
+      - backend
+  backend:
+    build: ./backend
+    command: ["./wait-for-it.sh", "database:5432", "--", "python", "manage.py", "runserver", "0.0.0.0:58894"]
+    ports:
+      - 58894:58894
+    env_file:
+      - ./backend/.env
+    depends_on:
+      - database
+      - redis
+  celery:
+    build: ./backend
+    command: celery -A lights worker -l INFO
+    volumes:
+      - ./backend/:/user/src/app/
+    depends_on:
+      - redis
+      - database
+  database:
+    image: postgres:9.6.21-alpine
+    env_file:
+      - ./backend/.env
+  redis:
+    image: redis:6.2.1-alpine

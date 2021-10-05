@@ -1,0 +1,77 @@
+{
+  "name": "emulator",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "ace-builds": "^1.4.12",
+    "antd": "^4.14.0",
+    "axios": "^0.21.1",
+    "electron-is-dev": "^2.0.0",
+    "electron-localshortcut": "^3.2.1",
+    "react": "^17.0.1",
+    "react-ace": "^9.3.0",
+    "react-dom": "^17.0.1",
+    "react-scripts": "4.0.3",
+    "socket.io-client": "^4.0.1",
+    "vm2": "^3.9.3",
+    "web-vitals": "^1.0.1",
+    "websocket": "^1.0.34"
+  },
+  "main": "main.js",
+  "homepage": "./",
+  "scripts": {
+    "react-start": "react-scripts start",
+    "react-build": "react-scripts build",
+    "react-test": "react-scripts test",
+    "react-eject": "react-scripts eject",
+    "electron-build": "electron-builder",
+    "release": "yarn react-build && electron-builder --publish=always",
+    "build": "yarn react-build && yarn electron-build",
+
+    "electron": "electron .",
+    "my-package": "copy main.js build && copy ..\\emulate\\emulate.js build && electron-builder build --win \n-c.extraMetadata.main=build/main.js --publish never",
+    "package-win":  "electron-packager . --overwrite --asar=true --platform=win32 --arch=ia32 --icon=assets/icons/win/icon.ico --prune=true --out=release-builds --version-string.CompanyName=CE --version-string.FileDescription=CE --version-string.ProductName=\"Electron Tutorial App\"\n"
+  },
+  "build": {
+    "files": [
+      "**/*",
+      "build/**/*",
+      "node_modules/**/*"
+    ],
+    "extends": null,
+    "publish": {
+      "provider": "github",
+      "repo": "UMCS-lights",
+      "owner": "xszym"
+    },
+    "extraMetadata": {
+      "main": "build/main.js"
+    }
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^5.11.4",
+    "@testing-library/react": "^11.1.0",
+    "@testing-library/user-event": "^12.1.10",
+    "electron-builder": "^22.11.1",
+    "electron-packager": "^15.2.0",
+    "electron": "^12.0.1"
+  }
+}
