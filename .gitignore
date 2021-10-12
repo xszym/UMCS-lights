@@ -11,5 +11,3 @@ node_modules
 .coveragerc
 htmlcov/
 /backend/coverage.xml
-/backend/.env.local
-/backend/.ssh
