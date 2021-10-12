@@ -35,6 +35,7 @@ INSTALLED_APPS = [
 
     # custom
     'codes',
+    'lights'
 ]
 
 MIDDLEWARE = [
@@ -121,6 +122,7 @@ USE_TZ = False
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
 
 # CELERY
 CELERY_BROKER_URL = 'redis://redis:6379'
