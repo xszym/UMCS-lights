@@ -51,15 +51,11 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile.prod
-    #their
     command: gunicorn lights.wsgi:application --bind 0.0.0.0:8000
-    #my
-    #command: ["./wait-for-it.sh", "database:5432", "--", "gunicorn", "hello_django.wsgi:application", "--bind", "0.0.0.0:8000"]
-    #original
-    #command: ["./wait-for-it.sh", "database:5432", "--", "python", "manage.py", "runserver", "0.0.0.0:58894"]
     volumes:
       - static_volume:/home/app/web/staticfiles
       - media_volume:/home/app/web/mediafiles
+    restart: always
     expose:
       - 8000
     env_file:
