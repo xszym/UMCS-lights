@@ -63,14 +63,6 @@ services:
     depends_on:
       - database
       - redis
-  celery:
-   build: ./backend
-   command: celery -A lights worker -l INFO
-   volumes:
-     - ./backend/:/user/src/app/
-   depends_on:
-     - redis
-     - database
   database:
     image: postgres:9.6.21-alpine
     volumes:

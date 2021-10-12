@@ -40,7 +40,7 @@ services:
       - backend
   backend:
     build: ./backend
-    command: ["./wait-for-it.sh", "database:5432", "--", "python", "manage.py", "runserver", "0.0.0.0:8000"]
+    command: ["python", "manage.py", "runserver", "0.0.0.0:8000"]
     volumes:
       - ./backend/:/usr/src/app/
     ports:
@@ -50,16 +50,6 @@ services:
     depends_on:
       - database
       - redis
-  celery:
-    build: ./backend
-    command: celery -A lights worker -l INFO
-    volumes:
-      - ./backend/:/user/src/app/
-    env_file:
-      - ./backend/.env.dev
-    depends_on:
-      - redis
-      - database
   database:
     image: postgres:9.6.21-alpine
     env_file:
