@@ -42,6 +42,11 @@ docker-compose exec backend python manage.py makemigrations
 docker-compose exec backend python manage.py migrate
 ```
 
+## Static files
+```
+docker-compose exec backend python manage.py collectstatic
+```
+
 ## Testing
 ```
 docker-compose exec backend pytest
