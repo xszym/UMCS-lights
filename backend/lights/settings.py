@@ -34,6 +34,7 @@ INSTALLED_APPS = [
 
     # custom
     'codes',
+    'lights'
 ]
 
 MIDDLEWARE = [

@@ -1,0 +1,91 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+
+<head>
+  <script src="https://cdn.jsdelivr.net/npm/p5@1.4.0/lib/p5.js"></script>
+</head>
+
+<body>
+
+  <script>
+var no_of_columns = 28;
+var no_of_rows = 5;
+
+var display_width = window.innerWidth;
+var display_height = window.innerHeight;
+
+var pixel_width = display_width/no_of_columns;
+var pixel_height = display_height/no_of_rows;
+
+let pixels_rows = [];
+var DMX_values = [];
+
+function setup(){
+  createCanvas(display_width, display_height);
+  background(0, 0, 0);
+  for(var i = 0; i < no_of_rows; i++){
+    var pixels_columns = [];
+    for(var j = 0; j < no_of_columns; j++){    
+      pixels_columns.push(new Pixel(pixel_width*j, pixel_height*i));
+    }
+    pixels_rows.push(pixels_columns);
+  }
+
+}
+
+function draw(){
+  background(0, 0, 0);
+  for (let i = 0; i < pixels_rows.length; i++) {
+    for (let j = 0; j < pixels_rows[i].length; j++) {
+      if(DMX_values.length > 0){
+        var id = (i * no_of_columns + j)*3;
+        pixels_rows[i][j].display(DMX_values[id], DMX_values[id + 1], DMX_values[id + 2]);
+      }
+    }
+  }
+}
+
+class Pixel {
+  constructor(_x, _y) {
+    this.x = _x;
+    this.y = _y;
+    this.width = pixel_width;
+    this.height = pixel_height;
+  }
+
+  display(r, g, b) {
+    fill(r, g, b);
+    rect(this.x, this.y, this.width, this.height);
+  }
+}
+  
+var dmx_values_websocket_connection = new WebSocket(
+  "ws://159.89.9.110:5678"
+);
+
+var scene_update_interval; 
+dmx_values_websocket_connection.onopen = function () {
+  console.log("dmx_values_websocket_connection");
+};
+
+dmx_values_websocket_connection.onerror = function (error) {
+    console.error("robot_status WebSocket Error ", error);
+};
+  
+dmx_values_websocket_connection.onmessage = function (message) {
+    try {
+        DMX_values = message.data.split(',').map(function(item) {
+          return parseInt(item);
+      });
+        console.log(DMX_values);
+    } catch (e) {
+      console.error(e);
+    }
+};
+  
+
+  </script>
+
+</body>
