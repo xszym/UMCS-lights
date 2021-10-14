@@ -53,8 +53,8 @@ services:
       dockerfile: Dockerfile
     command: gunicorn lights.wsgi:application --bind 0.0.0.0:8000
     volumes:
-      - static_volume:/home/app/web/staticfiles
-      - media_volume:/home/app/web/mediafiles
+      - static_volume:/usr/src/app/staticfiles
+      - media_volume:/usr/src/app/mediafiles
     restart: always
     expose:
       - 8000
