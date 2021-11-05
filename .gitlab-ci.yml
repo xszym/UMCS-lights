@@ -36,10 +36,11 @@ deploy:
       git checkout development &&
       docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY &&
       docker-compose pull &&
-      docker-compose stop &&
+      docker-compose -f docker-compose.prod.yml stop &&
       docker-compose -f docker-compose.prod.yml up --build -d &&
       sleep 15 &&
-      docker-compose exec -T backend python manage.py migrate"
+      docker-compose -f docker-compose.prod.yml exec -T backend python manage.py migrate &&
+      docker-compose -f docker-compose.prod.yml exec -T backend python manage.py collectstatic --no-input"
   only:
     - main
     - development
