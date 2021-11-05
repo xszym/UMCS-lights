@@ -62,7 +62,7 @@ class Pixel {
 }
   
 var dmx_values_websocket_connection = new WebSocket(
-  "ws://159.89.9.110:5678"
+  "ws://" + window.location.hostname + ":5678"
 );
 
 var scene_update_interval; 
