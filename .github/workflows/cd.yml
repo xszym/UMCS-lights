@@ -1,0 +1,16 @@
+name: CD
+
+on: [push]
+  push:
+    branches: [ $default-branch ]
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v2
+      - name: Create and start containers
+        run: ls
+      - name: Wait for containers to start
+        run: pwd
+        
