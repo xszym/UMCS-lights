@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   backend:
-    build: ./backend
+    build: ./backend:test
     command: ["python", "manage.py", "runserver", "0.0.0.0:8000"]
     ports:
       - 8000:8000
@@ -12,8 +12,8 @@ services:
       - database
       - redis
   database:
-    image: postgres:9.6.21-alpine
+    image: postgres:9.6.21-alpine:test
     env_file:
       - ./backend/.env.dev
   redis:
-    image: redis:6.2.1-alpine
+    image: redis:6.2.1-alpine:test
