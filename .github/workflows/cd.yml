@@ -16,4 +16,4 @@ jobs:
       - name: Wait for containers to start
         run: pwd
       - name: Wait for containers to start
-        run: ls /home/ubuntu/UMCS-lights
+        run: ls /home/lights/UMCS-lights
