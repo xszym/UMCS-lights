@@ -1,22 +1,19 @@
 version: '3.8'
 
 services:
-  backend:
+  backend_test:
     build: ./backend
-    container_name: backend_test
     command: ["python", "manage.py", "runserver", "0.0.0.0:8000"]
     ports:
       - 8000:8000
     env_file:
       - ./backend/.env.dev
     depends_on:
-      - database
-      - redis
-  database:
+      - database_test
+      - redis_test
+  database_test:
     image: postgres:9.6.21-alpine
-    container_name: database_test
     env_file:
       - ./backend/.env.dev
-  redis:
+  redis_test:
     image: redis:6.2.1-alpine
-    container_name: redis_test
