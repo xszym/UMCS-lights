@@ -10,8 +10,8 @@ services:
     env_file:
       - ./backend/.env.dev
     depends_on:
-      - database_test
-      - redis_test
+      - database
+      - redis
   database:
     image: postgres:9.6.21-alpine:test
     container_name: database_test
