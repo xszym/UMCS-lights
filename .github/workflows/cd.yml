@@ -13,4 +13,3 @@ jobs:
         run: ls
       - name: Wait for containers to start
         run: pwd
-        
